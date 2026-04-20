@@ -87,6 +87,19 @@ class EventController extends Controller
             ->with('success', 'Event berhasil diperbarui!');
     }
 
+    public function updateStatus(Request $request, Event $event)
+{
+    $request->validate([
+        'status' => 'required|in:draft,open,closed,ongoing,finished'
+    ]);
+
+    $event->update([
+        'status' => $request->status
+    ]);
+
+    return back();
+}
+
     public function destroy(Event $event)
     {
         $event->delete();

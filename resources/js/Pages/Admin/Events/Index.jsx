@@ -11,8 +11,11 @@ const STATUS_COLOR = {
 
 export default function EventsIndex({ events }) {
     function changeStatus(eventId, status) {
-        router.patch(route('admin.events.update', eventId), { status });
-    }
+    router.patch(route('admin.events.status', eventId), {
+        status: status
+    });
+}
+    
 
     return (
         <AdminLayout header="Manajemen Event">
@@ -78,23 +81,38 @@ export default function EventsIndex({ events }) {
                                 </td>
                                 <td className="p-4">
                                     <div className="flex gap-2">
-                                        <Link
-                                            href={route('admin.events.edit', event.id)}
-                                            className="text-blue-600 hover:underline text-xs"
-                                        >Edit</Link>
-                                        <Link
-                                            href={route('admin.reports.leaderboard', event.id)}
-                                            className="text-green-600 hover:underline text-xs"
-                                        >Leaderboard</Link>
-                                        <button
-                                            onClick={() => {
-                                                if (confirm('Hapus event ini?')) {
-                                                    router.delete(route('admin.events.destroy', event.id));
-                                                }
-                                            }}
-                                            className="text-red-500 hover:underline text-xs"
-                                        >Hapus</button>
-                                    </div>
+    <Link
+        href={route('admin.events.edit', event.id)}
+        className="text-blue-600 hover:underline text-xs"
+    >
+        Edit
+    </Link>
+
+    <Link
+        href={route('admin.reports.leaderboard', event.id)}
+        className="text-green-600 hover:underline text-xs"
+    >
+        Leaderboard
+    </Link>
+
+    <Link
+        href={route('admin.jury.index', event.id)}
+        className="text-purple-600 hover:underline text-xs"
+    >
+        Juri
+    </Link>
+
+    <button
+        onClick={() => {
+            if (confirm('Hapus event ini?')) {
+                router.delete(route('admin.events.destroy', event.id));
+            }
+        }}
+        className="text-red-500 hover:underline text-xs"
+    >
+        Hapus
+    </button>
+</div>
                                 </td>
                             </tr>
                         ))}

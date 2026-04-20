@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 
     Route::patch('/announcements/{announcement}/publish', [AnnouncementController::class, 'publish'])
     ->name('announcements.publish');
+    Route::patch('/events/{event}/status',
+    [EventController::class, 'updateStatus'])
+    ->name('events.status');
 
     Route::get('/dashboard',
         [App\Http\Controllers\Admin\DashboardController::class, 'index'])

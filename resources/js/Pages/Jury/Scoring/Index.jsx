@@ -1,50 +1,80 @@
+import JuryLayout from '@/Layouts/JuryLayout';
 import { Head, Link } from "@inertiajs/react";
 
 export default function Index({ assignments }) {
     return (
-        <>
+        <JuryLayout header="Penilaian Juri">
             <Head title="Penilaian Juri" />
 
-            <div className="p-6">
-                <h1 className="text-2xl font-bold mb-6">
-                    Daftar Penugasan Penilaian
-                </h1>
+            <div className="bg-white rounded-xl shadow p-6">
+                <h2 className="font-semibold text-gray-700 mb-4">
+                    Event yang Perlu Dinilai
+                </h2>
 
                 {assignments.length === 0 ? (
-                    <div className="bg-white shadow rounded-lg p-6 text-center">
-                        <p className="text-gray-500">
-                            Belum ada penugasan penilaian.
-                        </p>
-                    </div>
+                    <p className="text-gray-400 text-sm text-center py-8">
+                        Belum ada penugasan event.
+                    </p>
                 ) : (
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {assignments.map((assignment) => (
-                            <div
-                                key={assignment.id}
-                                className="bg-white shadow rounded-xl p-6 border"
-                            >
-                                <h2 className="text-lg font-semibold mb-2">
-                                    {assignment.event?.title}
-                                </h2>
+                    assignments.map(a => (
+                        <div
+                            key={a.id}
+                            className="border rounded-lg p-4 mb-3 hover:border-teal-300 transition"
+                        >
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <p className="font-medium text-gray-800">
+                                        {a.event?.title}
+                                    </p>
 
-                                <p className="text-sm text-gray-600 mb-4">
-                                    Kategori: {assignment.category?.name}
-                                </p>
+                                    {a.category && (
+                                        <p className="text-xs text-gray-500 mt-0.5">
+                                            Kategori: {a.category.name}
+                                        </p>
+                                    )}
+                                </div>
 
                                 <Link
                                     href={route(
                                         "jury.submissions.index",
-                                        assignment.event.id
+                                        a.event.id
                                     )}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                                    className="bg-teal-600 text-white text-xs px-3 py-1.5
+                                               rounded-lg hover:bg-teal-700 transition"
                                 >
-                                    Mulai Penilaian
+                                    Nilai Sekarang →
                                 </Link>
                             </div>
-                        ))}
-                    </div>
+
+                            {a.progress && (
+                                <div className="mt-3">
+                                    <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                        <span>Progres Penilaian</span>
+                                        <span>
+                                            {a.progress.scored_submissions}/
+                                            {a.progress.total_submissions} karya
+                                            ({a.progress.percentage}%)
+                                        </span>
+                                    </div>
+
+                                    <div className="w-full bg-gray-100 rounded-full h-2">
+                                        <div
+                                            className="bg-teal-500 h-2 rounded-full transition-all"
+                                            style={{ width: `${a.progress.percentage}%` }}
+                                        />
+                                    </div>
+
+                                    {a.progress.is_complete && (
+                                        <p className="text-xs text-teal-600 mt-1 font-medium">
+                                            ✓ Penilaian selesai
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    ))
                 )}
             </div>
-        </>
+        </JuryLayout>
     );
 }
