@@ -26,6 +26,12 @@ class SubmissionController extends Controller
             ->with('info', 'Anda sudah mengupload karya untuk pendaftaran ini.');
     }
 
+    if ($registration->event->status === 'finished') {
+    return redirect()
+        ->route('user.registrations.index')
+        ->with('error', 'Event sudah selesai. Upload ditutup.');
+}
+
     return Inertia::render('User/Submissions/Create', [
         'registration' => $registration->load(['event', 'category']),
     ]);

@@ -11,21 +11,29 @@ use Inertia\Inertia;
 class EventController extends Controller
 {
     public function index(Request $request)
-    {
-        $events = Event::with(['categories'])
-            ->where('status', 'open')
-            ->when($request->search, fn($q) =>
-                $q->where('title', 'like', "%{$request->search}%"))
-            ->withCount('registrations')
-            ->latest()
-            ->paginate(9)
-            ->withQueryString();
+{
+    $events = Event::with(['categories'])
+        ->where('status', '!=', 'draft')
 
-        return Inertia::render('User/Events/Index', [
-            'events'  => $events,
-            'filters' => $request->only(['search']),
-        ]);
-    }
+        // FILTER STATUS
+        ->when($request->status, fn($q) =>
+            $q->where('status', $request->status)
+        )
+
+        ->when($request->search, fn($q) =>
+            $q->where('title', 'like', "%{$request->search}%"))
+
+        ->withCount('registrations')
+
+        ->orderByRaw("FIELD(status, 'open', 'ongoing', 'closed', 'finished')")
+        ->paginate(9)
+        ->withQueryString();
+
+    return Inertia::render('User/Events/Index', [
+        'events'  => $events,
+        'filters' => $request->only(['search', 'status']),
+    ]);
+}
 
     public function show(Event $event)
     {

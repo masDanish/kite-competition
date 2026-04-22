@@ -620,7 +620,7 @@ export default function Welcome({ auth = { user: null } }) {
                                     <img src={img}
                                         className={`w-full object-cover transition-transform duration-700
                                                     group-hover:scale-110
-                                                    ${i === 0 ? 'h-72 md:h-full' : 'h-44'}`}
+                                                    ${i === 0 ? 'h-72 md:h-full' : 'h-full  '}`}
                                         alt={`Galeri ${i + 1}`} />
                                     <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/70
                                                     via-transparent to-transparent opacity-0

@@ -15,7 +15,8 @@ class RegistrationController extends Controller
     {
         $registrations = EventRegistration::with([
                 'event',
-                'category'
+                'category',
+                'submission'
             ])
             ->where('user_id', Auth::id())
             ->latest()

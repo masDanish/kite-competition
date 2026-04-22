@@ -190,6 +190,7 @@ function RegistrationCard({ reg, variants }) {
     const isApproved = reg.status === 'approved';
     const isRejected = reg.status === 'rejected';
     const isPending  = reg.status === 'pending';
+    const eventFinished = reg.event?.status === 'finished';
 
     const statusConfig = {
         pending:  { label:'Menunggu Review', icon:AlertCircle,
@@ -243,7 +244,7 @@ function RegistrationCard({ reg, variants }) {
                             </div>
                         </div>
 
-                        {isApproved && (
+                        {isApproved && !eventFinished && (
                             <div className="mt-4">
                                 {hasSubmission ? (
                                     <motion.div initial={{opacity:0,scale:0.95}}
@@ -265,18 +266,19 @@ function RegistrationCard({ reg, variants }) {
                                     </motion.div>
                                 ) : (
                                     <motion.div animate={{scale:[1,1.01,1]}}
-                                        transition={{duration:2.5,repeat:Infinity}}>
-                                        <Link href={route('user.submissions.create', reg.id)}
-                                            className="inline-flex items-center gap-2
-                                                       bg-gradient-to-r from-indigo-600 to-blue-600
-                                                       text-white font-semibold px-5 py-2.5
-                                                       rounded-xl text-sm shadow-md shadow-indigo-200
-                                                       hover:shadow-indigo-300 hover:-translate-y-0.5
-                                                       transition-all duration-300">
-                                            <Upload className="w-4 h-4"/>
-                                            Upload Karya Sekarang
-                                        </Link>
-                                    </motion.div>
+                transition={{duration:2.5,repeat:Infinity}}>
+                <Link
+                    href={route('user.submissions.create', reg.id)}
+                    className="inline-flex items-center gap-2
+                               bg-gradient-to-r from-indigo-600 to-blue-600
+                               text-white font-semibold px-5 py-2.5
+                               rounded-xl text-sm shadow-md shadow-indigo-200
+                               hover:shadow-indigo-300 hover:-translate-y-0.5
+                               transition-all duration-300">
+                    <Upload className="w-4 h-4"/>
+                    Upload Karya Sekarang
+                </Link>
+            </motion.div>
                                 )}
                             </div>
                         )}
