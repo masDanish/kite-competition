@@ -139,6 +139,7 @@ function ScoreForm({ submission, criteria }) {
                                border border-teal-100 shadow-sm"
                 />
             )}
+            
 
             {/* FORM */}
             <form onSubmit={submit} className="space-y-3">
