@@ -5,9 +5,11 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Star } from 'lucide-react';
+import Logo from '@/Assets/logo.png';
 
 export default function Login({ status, canResetPassword }) {
-
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -16,133 +18,190 @@ export default function Login({ status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
-
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
+        post(route('login'), { onFinish: () => reset('password') });
     };
 
     return (
         <GuestLayout>
             <Head title="Login" />
 
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 px-6">
+            <div className="min-h-screen flex items-center justify-center
+                            bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950
+                            px-6 relative overflow-hidden">
+
+                {/* Grid background */}
+                <div className="absolute inset-0 opacity-20"
+                    style={{
+                        backgroundImage: `linear-gradient(rgba(99,102,241,0.3) 1px, transparent 1px),
+                                          linear-gradient(90deg, rgba(99,102,241,0.3) 1px, transparent 1px)`,
+                        backgroundSize: '60px 60px',
+                    }} />
+
+                {/* Glowing orbs */}
+                <motion.div className="absolute w-96 h-96 rounded-full pointer-events-none"
+                    style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)', top: '5%', left: '5%', opacity: 0.15 }}
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.2, 0.1] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
+                <motion.div className="absolute w-72 h-72 rounded-full pointer-events-none"
+                    style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)', bottom: '10%', right: '5%', opacity: 0.15 }}
+                    animate={{ scale: [1.2, 1, 1.2], opacity: [0.15, 0.08, 0.15] }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
+
+                {/* Floating particles */}
+                {[...Array(12)].map((_, i) => (
+                    <motion.div key={i}
+                        className="absolute w-1 h-1 bg-indigo-300 rounded-full opacity-60 pointer-events-none"
+                        style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+                        animate={{ y: [0, -25, 0], opacity: [0.3, 0.7, 0.3] }}
+                        transition={{ duration: 3 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3, ease: 'easeInOut' }} />
+                ))}
 
                 {/* CARD */}
-                <div className="w-full max-w-4xl bg-white/70 backdrop-blur-xl shadow-xl rounded-2xl overflow-hidden grid md:grid-cols-2">
+                <motion.div
+                    initial={{ opacity: 0, y: 32 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative z-10 w-full max-w-4xl bg-white/10 backdrop-blur-xl
+                               shadow-2xl shadow-black/40 rounded-3xl overflow-hidden
+                               grid md:grid-cols-2 border border-white/10">
 
-                    {/* LEFT SIDE (branding) */}
-                    <div className="hidden md:flex flex-col justify-center items-center bg-indigo-600 text-white p-10">
+                    {/* LEFT — branding */}
+                    <div className="hidden md:flex flex-col justify-center items-center
+                                    bg-gradient-to-br from-indigo-600 to-blue-700 text-white p-12
+                                    relative overflow-hidden">
+                        {/* Corner decoration */}
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10
+                                        rounded-bl-full" />
+                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5
+                                        rounded-tr-full" />
 
-                        <div className="text-6xl animate-bounce">🪁</div>
+                        <motion.div
+                            animate={{ rotate: [0, 8, -5, 0] }}
+                            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                            className="text-7xl mb-6 relative z-10">
+                            🪁
+                        </motion.div>
 
-                        <h1 className="text-2xl font-bold mt-4 text-center">
-                            Kite Competition
-                        </h1>
+                        <div className="relative z-10 flex items-center gap-3 mb-4">
+                            <img src={Logo} className="w-10 h-10 object-contain rounded-xl" />
+                            <div>
+                                <p className="font-black text-white text-lg leading-none">
+                                    Kite Competition
+                                </p>
+                                <p className="text-indigo-200 text-xs font-medium">
+                                    Design • Fly • Compete
+                                </p>
+                            </div>
+                        </div>
 
-                        <p className="text-sm text-indigo-100 mt-2 text-center">
-                            Fly your creativity higher and join global competition
+                        <p className="relative z-10 text-sm text-indigo-100 text-center
+                                      leading-relaxed max-w-xs">
+                            Fly your creativity higher and join the global kite competition.
                         </p>
 
-                        <div className="mt-6 text-5xl opacity-20">
-                            ✦ ✧ ✦
+                        <div className="relative z-10 flex gap-1 mt-6">
+                            {[...Array(3)].map((_, i) => (
+                                <Star key={i} className="w-3 h-3 fill-indigo-300 text-indigo-300" />
+                            ))}
                         </div>
+
+                        {/* Animated badge */}
+                        <motion.div
+                            animate={{ y: [0, -6, 0] }}
+                            transition={{ duration: 4, repeat: Infinity }}
+                            className="relative z-10 mt-8 bg-white/15 border border-white/20
+                                       rounded-2xl px-4 py-2.5 text-center backdrop-blur-sm">
+                            <p className="text-xs font-bold text-white">#1 Platform Layangan</p>
+                            <p className="text-[10px] text-indigo-200 mt-0.5">1200+ Peserta Aktif</p>
+                        </motion.div>
                     </div>
 
-                    {/* RIGHT SIDE (form) */}
-                    <div className="p-8">
-
-                        <h2 className="text-2xl font-bold text-gray-800">
-                            Welcome Back 👋
-                        </h2>
-
-                        <p className="text-sm text-gray-500 mt-1">
-                            Login to continue your kite journey
-                        </p>
+                    {/* RIGHT — form */}
+                    <div className="p-8 bg-white/5 backdrop-blur-sm">
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-black text-white">
+                                Welcome Back 👋
+                            </h2>
+                            <p className="text-sm text-slate-400 mt-1">
+                                Login to continue your kite journey
+                            </p>
+                        </div>
 
                         {status && (
-                            <div className="mt-3 text-sm text-green-600">
+                            <div className="mb-4 text-sm text-emerald-400 bg-emerald-400/10
+                                            border border-emerald-400/20 rounded-xl px-4 py-3">
                                 {status}
                             </div>
                         )}
 
-                        <form onSubmit={submit} className="mt-6 space-y-4">
+                        <form onSubmit={submit} className="space-y-4">
 
-                            {/* EMAIL */}
                             <div>
-                                <InputLabel htmlFor="email" value="Email" />
+                                <InputLabel htmlFor="email" value="Email"
+                                    className="text-slate-300 text-sm font-medium" />
                                 <TextInput
-                                    id="email"
-                                    type="email"
-                                    value={data.email}
-                                    className="mt-1 block w-full rounded-lg border-gray-200 focus:ring-indigo-500"
-                                    autoComplete="username"
-                                    isFocused={true}
+                                    id="email" type="email" value={data.email}
+                                    className="mt-1 block w-full rounded-xl border-white/10
+                                               bg-white/10 text-white placeholder:text-slate-500
+                                               focus:ring-indigo-500 focus:border-indigo-500
+                                               backdrop-blur-sm"
+                                    autoComplete="username" isFocused
                                     onChange={(e) => setData('email', e.target.value)}
                                 />
                                 <InputError message={errors.email} className="mt-1" />
                             </div>
 
-                            {/* PASSWORD */}
                             <div>
-                                <InputLabel htmlFor="password" value="Password" />
+                                <InputLabel htmlFor="password" value="Password"
+                                    className="text-slate-300 text-sm font-medium" />
                                 <TextInput
-                                    id="password"
-                                    type="password"
-                                    value={data.password}
-                                    className="mt-1 block w-full rounded-lg border-gray-200 focus:ring-indigo-500"
+                                    id="password" type="password" value={data.password}
+                                    className="mt-1 block w-full rounded-xl border-white/10
+                                               bg-white/10 text-white placeholder:text-slate-500
+                                               focus:ring-indigo-500 focus:border-indigo-500
+                                               backdrop-blur-sm"
                                     autoComplete="current-password"
                                     onChange={(e) => setData('password', e.target.value)}
                                 />
                                 <InputError message={errors.password} className="mt-1" />
                             </div>
 
-                            {/* REMEMBER */}
                             <div className="flex items-center">
-                                <Checkbox
-                                    name="remember"
-                                    checked={data.remember}
-                                    onChange={(e) => setData('remember', e.target.checked)}
-                                />
-                                <span className="ml-2 text-sm text-gray-600">
-                                    Remember me
-                                </span>
+                                <Checkbox name="remember" checked={data.remember}
+                                    onChange={(e) => setData('remember', e.target.checked)} />
+                                <span className="ml-2 text-sm text-slate-400">Remember me</span>
                             </div>
 
-                            {/* BUTTON */}
-                            <PrimaryButton
-                                className="w-full bg-indigo-600 hover:bg-indigo-700 transition"
-                                disabled={processing}
-                            >
-                                Log in
-                            </PrimaryButton>
+                            <motion.button
+                                type="submit" disabled={processing}
+                                whileHover={{ scale: 1.01, y: -1 }}
+                                whileTap={{ scale: 0.99 }}
+                                className="w-full flex items-center justify-center gap-2
+                                           bg-gradient-to-r from-indigo-500 to-blue-600
+                                           text-white font-bold py-3 rounded-xl
+                                           shadow-lg shadow-indigo-500/30
+                                           hover:shadow-indigo-500/50 transition-all
+                                           disabled:opacity-50 disabled:cursor-not-allowed">
+                                {processing ? 'Logging in...' : 'Log In'}
+                                {!processing && <ArrowRight className="w-4 h-4" />}
+                            </motion.button>
 
-                            {/* LINKS */}
-                            <div className="flex justify-between text-sm mt-3">
-
+                            <div className="flex justify-between text-sm pt-1">
                                 {canResetPassword && (
-                                    <Link
-                                        href={route('password.request')}
-                                        className="text-gray-500 hover:text-indigo-600"
-                                    >
+                                    <Link href={route('password.request')}
+                                        className="text-slate-400 hover:text-indigo-400 transition">
                                         Forgot password?
                                     </Link>
                                 )}
-
-                                <Link
-                                    href={route('register')}
-                                    className="text-indigo-600 hover:underline"
-                                >
+                                <Link href={route('register')}
+                                    className="text-indigo-400 hover:text-indigo-300
+                                               hover:underline transition">
                                     Create account
                                 </Link>
-
                             </div>
-
                         </form>
                     </div>
-
-                </div>
-
+                </motion.div>
             </div>
         </GuestLayout>
     );
