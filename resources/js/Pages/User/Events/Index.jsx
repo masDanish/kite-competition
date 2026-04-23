@@ -5,10 +5,11 @@ import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import {
     Search, MapPin, Clock, Tag, Sparkles,
     ArrowRight, ChevronLeft, ChevronRight,
-    Eye, Lock, CheckCircle2, Play, AlertCircle
+    Eye, Lock, CheckCircle2, Play, AlertCircle,
+    ClipboardCheck, Hourglass, XCircle
 } from 'lucide-react';
 
-/* ── Partikel statis agar tidak re-generate tiap render ── */
+/* ── Partikel statis ── */
 const PARTICLES = Array.from({ length: 16 }, (_, i) => ({
     id: i,
     left:  `${(i * 337) % 100}%`,
@@ -46,33 +47,57 @@ const fadeUp  = {
     show:   { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22,1,0.36,1] } }
 };
 
-/* ── Konfigurasi status ── */
+/* ── Status event ── */
 const STATUS_CFG = {
-    open:     { label: 'Buka',       dot: '●', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200', pulse: true  },
-    closed:   { label: 'Ditutup',    dot: '●', badge: 'bg-red-100 text-red-600 border-red-200',            pulse: false },
-    ongoing:  { label: 'Berlangsung',dot: '●', badge: 'bg-blue-100 text-blue-700 border-blue-200',         pulse: true  },
-    finished: { label: 'Selesai',    dot: '●', badge: 'bg-gray-100 text-gray-500 border-gray-200',         pulse: false },
-    draft:    { label: 'Draft',      dot: '●', badge: 'bg-yellow-100 text-yellow-700 border-yellow-200',   pulse: false },
+    open:     { label: 'Buka',        dot: '●', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200', pulse: true  },
+    closed:   { label: 'Ditutup',     dot: '●', badge: 'bg-red-100 text-red-600 border-red-200',            pulse: false },
+    ongoing:  { label: 'Berlangsung', dot: '●', badge: 'bg-blue-100 text-blue-700 border-blue-200',         pulse: true  },
+    finished: { label: 'Selesai',     dot: '●', badge: 'bg-gray-100 text-gray-500 border-gray-200',         pulse: false },
+    draft:    { label: 'Draft',       dot: '●', badge: 'bg-yellow-100 text-yellow-700 border-yellow-200',   pulse: false },
 };
 
-/* ── Tab filter ── */
+/* ── Status registrasi user ── */
+const REG_CFG = {
+    pending: {
+        label:    'Menunggu Persetujuan',
+        sublabel: 'Pendaftaran sedang diproses admin',
+        icon:     Hourglass,
+        cls:      'bg-amber-50 text-amber-700 border-amber-200',
+        iconCls:  'text-amber-500',
+    },
+    approved: {
+        label:    'Sudah Terdaftar ✓',
+        sublabel: 'Pendaftaran disetujui — lihat dashboard',
+        icon:     ClipboardCheck,
+        cls:      'bg-emerald-50 text-emerald-700 border-emerald-200',
+        iconCls:  'text-emerald-500',
+    },
+    rejected: {
+        label:    'Pendaftaran Ditolak',
+        sublabel: 'Lihat alasan di dashboard',
+        icon:     XCircle,
+        cls:      'bg-red-50 text-red-600 border-red-200',
+        iconCls:  'text-red-500',
+    },
+};
+
+/* ── Tabs ── */
 const TABS = [
-    { key: 'all',      label: 'Semua Event',    icon: Eye           },
-    { key: 'open',     label: 'Sedang Buka',    icon: Play          },
-    { key: 'ongoing',  label: 'Berlangsung',    icon: CheckCircle2  },
-    { key: 'finished', label: 'Sudah Selesai',  icon: Lock          },
+    { key: 'all',      label: 'Semua Event',   icon: Eye          },
+    { key: 'open',     label: 'Sedang Buka',   icon: Play         },
+    { key: 'ongoing',  label: 'Berlangsung',   icon: CheckCircle2 },
+    { key: 'finished', label: 'Sudah Selesai', icon: Lock         },
 ];
 
-export default function EventsIndex({ events, filters }) {
-    const [search,   setSearch]   = useState(filters.search || '');
-    const [activeTab, setTab]     = useState('all');
+export default function EventsIndex({ events, filters, myRegistrations = {} }) {
+    const [search,    setSearch] = useState(filters.search || '');
+    const [activeTab, setTab]    = useState('all');
 
     function doSearch(e) {
         e.preventDefault();
         router.get(route('events.index'), { search }, { preserveState: true });
     }
 
-    /* Filter di frontend berdasarkan tab */
     const filtered = events.data.filter(ev => {
         if (activeTab === 'all')      return true;
         if (activeTab === 'open')     return ev.status === 'open';
@@ -81,7 +106,6 @@ export default function EventsIndex({ events, filters }) {
         return true;
     });
 
-    /* Hitung badge tiap tab */
     const counts = {
         all:      events.data.length,
         open:     events.data.filter(e => e.status === 'open').length,
@@ -108,7 +132,6 @@ export default function EventsIndex({ events, filters }) {
                                           linear-gradient(90deg,rgba(99,102,241,0.5) 1px,transparent 1px)`,
                         backgroundSize: '40px 40px'
                     }} />
-
                 <motion.div className="absolute w-64 h-64 rounded-full pointer-events-none"
                     style={{ background: 'radial-gradient(circle,#6366f1,transparent 70%)',
                              top: '-20%', right: '-5%', opacity: 0.2 }}
@@ -119,7 +142,6 @@ export default function EventsIndex({ events, filters }) {
                              bottom: '-15%', left: '5%', opacity: 0.15 }}
                     animate={{ scale: [1.2,1,1.2] }}
                     transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} />
-
                 {PARTICLES.map(p => (
                     <motion.div key={p.id}
                         className="absolute rounded-full pointer-events-none"
@@ -132,8 +154,7 @@ export default function EventsIndex({ events, filters }) {
                 <div className="relative z-10 flex flex-col sm:flex-row justify-between
                                 items-start sm:items-center gap-5">
                     <div>
-                        <motion.div
-                            initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }}
+                        <motion.div initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }}
                             transition={{ delay: 0.2 }}
                             className="inline-flex items-center gap-2 bg-indigo-500/20
                                        border border-indigo-400/30 text-indigo-300 text-xs
@@ -141,14 +162,12 @@ export default function EventsIndex({ events, filters }) {
                             <Sparkles className="w-3 h-3 text-yellow-300" />
                             Semua Kompetisi Layangan
                         </motion.div>
-                        <motion.h1
-                            initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }}
+                        <motion.h1 initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }}
                             transition={{ delay: 0.3 }}
                             className="text-2xl font-black text-white tracking-tight">
                             Event Lomba Layangan 🪁
                         </motion.h1>
-                        <motion.p
-                            initial={{ opacity:0 }} animate={{ opacity:1 }}
+                        <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }}
                             transition={{ delay: 0.4 }}
                             className="text-slate-300 text-sm mt-1">
                             {events.data.length} event tersedia — aktif, berlangsung, maupun yang telah selesai
@@ -185,13 +204,11 @@ export default function EventsIndex({ events, filters }) {
                 </div>
             </motion.div>
 
-            {/* ══ SEARCH + FILTER TABS ══ */}
-            <motion.div
-                initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
+            {/* ══ SEARCH + TABS ══ */}
+            <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
                 transition={{ duration:0.5, delay:0.15 }}
                 className="space-y-4 mb-8">
 
-                {/* Search */}
                 <form onSubmit={doSearch} className="flex gap-3">
                     <div className="relative flex-1">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2
@@ -203,8 +220,7 @@ export default function EventsIndex({ events, filters }) {
                                        transition placeholder:text-gray-400"
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            placeholder="Cari nama event..."
-                        />
+                            placeholder="Cari nama event..." />
                     </div>
                     <motion.button type="submit"
                         whileHover={{ y:-2, scale:1.02 }} whileTap={{ scale:0.97 }}
@@ -216,17 +232,13 @@ export default function EventsIndex({ events, filters }) {
                     </motion.button>
                 </form>
 
-                {/* Tab filter */}
                 <div className="flex flex-wrap gap-2">
                     {TABS.map(tab => {
                         const isActive = activeTab === tab.key;
-                        const count    = counts[tab.key];
                         return (
-                            <motion.button
-                                key={tab.key}
+                            <motion.button key={tab.key}
                                 onClick={() => setTab(tab.key)}
-                                whileHover={{ y: -2 }}
-                                whileTap={{ scale: 0.96 }}
+                                whileHover={{ y: -2 }} whileTap={{ scale: 0.96 }}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-2xl
                                             text-sm font-semibold border-2 transition-all duration-200
                                             ${isActive
@@ -235,10 +247,8 @@ export default function EventsIndex({ events, filters }) {
                                 <tab.icon className="w-3.5 h-3.5" />
                                 {tab.label}
                                 <span className={`text-xs px-2 py-0.5 rounded-full font-black
-                                                  ${isActive
-                                                      ? 'bg-white/20 text-white'
-                                                      : 'bg-gray-100 text-gray-500'}`}>
-                                    {count}
+                                                  ${isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                                    {counts[tab.key]}
                                 </span>
                             </motion.button>
                         );
@@ -249,8 +259,7 @@ export default function EventsIndex({ events, filters }) {
             {/* ══ CARDS ══ */}
             <AnimatePresence mode="wait">
                 {filtered.length === 0 ? (
-                    <motion.div
-                        key="empty"
+                    <motion.div key="empty"
                         initial={{ opacity:0, scale:0.95 }}
                         animate={{ opacity:1, scale:1 }}
                         exit={{ opacity:0 }}
@@ -259,28 +268,25 @@ export default function EventsIndex({ events, filters }) {
                         <motion.div animate={{ y:[0,-12,0], rotate:[0,5,-3,0] }}
                             transition={{ duration:5, repeat:Infinity }}
                             className="text-7xl mb-4">🪁</motion.div>
-                        <p className="text-gray-500 font-semibold mb-1">
-                            Tidak ada event ditemukan
-                        </p>
-                        <p className="text-gray-400 text-sm">
-                            Coba tab lain atau ubah kata pencarian
-                        </p>
+                        <p className="text-gray-500 font-semibold mb-1">Tidak ada event ditemukan</p>
+                        <p className="text-gray-400 text-sm">Coba tab lain atau ubah kata pencarian</p>
                         {activeTab !== 'all' && (
                             <button onClick={() => setTab('all')}
-                                className="mt-4 text-indigo-600 text-sm font-semibold
-                                           hover:underline">
+                                className="mt-4 text-indigo-600 text-sm font-semibold hover:underline">
                                 Lihat semua event →
                             </button>
                         )}
                     </motion.div>
                 ) : (
-                    <motion.div
-                        key={activeTab}
+                    <motion.div key={activeTab}
                         initial="hidden" animate="show" variants={stagger}
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filtered.map(event => (
                             <motion.div key={event.id} variants={fadeUp}>
-                                <EventCard event={event} />
+                                <EventCard
+                                    event={event}
+                                    regStatus={myRegistrations[event.id] ?? null}
+                                />
                             </motion.div>
                         ))}
                     </motion.div>
@@ -316,25 +322,24 @@ export default function EventsIndex({ events, filters }) {
     );
 }
 
-/* ══════════════════════════════════════
-   EVENT CARD — tampil untuk semua status
-══════════════════════════════════════ */
-function EventCard({ event }) {
+/* ══════════════════════════════════════════════
+   EVENT CARD
+   regStatus: 'pending' | 'approved' | 'rejected' | null
+══════════════════════════════════════════════ */
+function EventCard({ event, regStatus }) {
     const [hovered, setHovered] = useState(false);
 
     const isOpen     = event.status === 'open';
     const isOngoing  = event.status === 'ongoing';
     const isFinished = ['finished','closed'].includes(event.status);
-    const isDraft    = event.status === 'draft';
 
     const statusCfg  = STATUS_CFG[event.status] ?? STATUS_CFG.closed;
+    const regCfg     = regStatus ? REG_CFG[regStatus] : null;
+    const hasReg     = !!regStatus;
 
     const daysLeft = Math.ceil(
         (new Date(event.registration_end) - new Date()) / (1000*60*60*24)
     );
-
-    /* Grayscale ringan untuk event yang selesai */
-    const cardOpacity = isFinished ? 'opacity-80' : 'opacity-100';
 
     return (
         <TiltCard intensity={isFinished ? 4 : 8} className="h-full">
@@ -346,11 +351,12 @@ function EventCard({ event }) {
                 className={`bg-white rounded-3xl shadow-sm border overflow-hidden
                             flex flex-col h-full transition-all duration-300
                             ${isFinished
-                                ? 'border-gray-200 hover:border-gray-300 hover:shadow-md'
-                                : 'border-gray-100 hover:shadow-xl hover:shadow-indigo-100/50 hover:border-indigo-200'}
-                            ${cardOpacity}`}>
+                                ? 'border-gray-200 hover:border-gray-300 hover:shadow-md opacity-80'
+                                : hasReg
+                                    ? 'border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/60 hover:border-indigo-300'
+                                    : 'border-gray-100 hover:shadow-xl hover:shadow-indigo-100/50 hover:border-indigo-200'}`}>
 
-                {/* ── Poster / Placeholder ── */}
+                {/* ── Gambar / Placeholder ── */}
                 <div className="relative overflow-hidden">
                     {event.poster ? (
                         <>
@@ -362,9 +368,8 @@ function EventCard({ event }) {
                                 className={`w-full h-44 object-cover
                                             ${isFinished ? 'grayscale-[30%]' : ''}`} />
                             <div className={`absolute inset-0 bg-gradient-to-t
-                                            ${isFinished
-                                                ? 'from-gray-900/60 to-transparent'
-                                                : 'from-black/30 to-transparent'}`} />
+                                            ${isFinished ? 'from-gray-900/60 to-transparent'
+                                                         : 'from-black/30 to-transparent'}`} />
                         </>
                     ) : (
                         <div className={`relative w-full h-44 flex items-center justify-center
@@ -373,8 +378,7 @@ function EventCard({ event }) {
                                              ? 'bg-gradient-to-br from-gray-800 to-gray-900'
                                              : 'bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950'}`}>
                             {[...Array(8)].map((_,i) => (
-                                <motion.div key={i}
-                                    className="absolute rounded-full"
+                                <motion.div key={i} className="absolute rounded-full"
                                     style={{
                                         width:3, height:3,
                                         background: isFinished
@@ -385,8 +389,7 @@ function EventCard({ event }) {
                                     animate={{ y:[0,-10,0], opacity:[0.2,0.8,0.2] }}
                                     transition={{ duration:2+i%3, repeat:Infinity, delay:i*0.4 }} />
                             ))}
-                            <motion.div
-                                animate={{ rotate:[0,8,-4,0] }}
+                            <motion.div animate={{ rotate:[0,8,-4,0] }}
                                 transition={{ duration:5, repeat:Infinity }}>
                                 <svg width="56" height="68" viewBox="0 0 100 120" fill="none">
                                     <defs>
@@ -409,7 +412,7 @@ function EventCard({ event }) {
                         </div>
                     )}
 
-                    {/* Badge status di atas gambar */}
+                    {/* Badge status event */}
                     <div className="absolute top-3 left-3">
                         <motion.span
                             animate={statusCfg.pulse ? { scale:[1,1.06,1] } : {}}
@@ -420,7 +423,28 @@ function EventCard({ event }) {
                         </motion.span>
                     </div>
 
-                    {/* Overlay banner untuk event selesai */}
+                    {/* Badge "Sudah Daftar" di pojok kanan atas */}
+                    {hasReg && (
+                        <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                            className="absolute top-3 right-3">
+                            <span className={`text-xs px-2.5 py-1 rounded-full font-bold border
+                                             backdrop-blur-sm
+                                             ${regStatus === 'approved'
+                                                 ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg shadow-emerald-500/30'
+                                                 : regStatus === 'pending'
+                                                 ? 'bg-amber-500 text-white border-amber-400 shadow-lg shadow-amber-500/30'
+                                                 : 'bg-red-500 text-white border-red-400'}`}>
+                                {regStatus === 'approved' ? '✓ Terdaftar'
+                                    : regStatus === 'pending' ? '⏳ Menunggu'
+                                    : '✕ Ditolak'}
+                            </span>
+                        </motion.div>
+                    )}
+
+                    {/* Overlay event selesai */}
                     {isFinished && (
                         <div className="absolute inset-0 flex items-center justify-center">
                             <div className="bg-black/40 backdrop-blur-[2px] rounded-2xl
@@ -434,37 +458,36 @@ function EventCard({ event }) {
                     )}
                 </div>
 
-                {/* ── Accent bar ── */}
+                {/* Accent bar */}
                 <AnimatePresence>
                     {hovered && !isFinished && (
                         <motion.div
                             initial={{ scaleX:0 }} animate={{ scaleX:1 }} exit={{ scaleX:0 }}
-                            className="h-0.5 bg-gradient-to-r from-indigo-500 to-blue-500 origin-left" />
+                            className={`h-0.5 origin-left bg-gradient-to-r
+                                        ${hasReg && regStatus === 'approved'
+                                            ? 'from-emerald-500 to-teal-500'
+                                            : hasReg && regStatus === 'pending'
+                                            ? 'from-amber-500 to-orange-500'
+                                            : 'from-indigo-500 to-blue-500'}`} />
                     )}
                 </AnimatePresence>
 
                 <div className="p-5 flex flex-col flex-1">
-                    {/* Title + status */}
-                    <div className="flex justify-between items-start gap-2 mb-2">
-                        <h3 className="font-bold text-gray-800 leading-tight text-sm line-clamp-2">
-                            {event.title}
-                        </h3>
-                    </div>
+                    <h3 className="font-bold text-gray-800 leading-tight text-sm line-clamp-2 mb-2">
+                        {event.title}
+                    </h3>
 
-                    {/* Lokasi */}
                     {event.location && (
-                        <p className="flex items-center gap-1 text-xs text-gray-400 mb-2">
+                        <p className="flex items-center gap-1 text-xs text-gray-400 mb-1.5">
                             <MapPin className="w-3 h-3 shrink-0"/> {event.location}
                         </p>
                     )}
 
-                    {/* Periode event */}
                     <p className="flex items-center gap-1 text-xs text-gray-400 mb-2">
                         <Clock className="w-3 h-3 shrink-0"/>
                         {event.event_start} — {event.event_end}
                     </p>
 
-                    {/* Kategori */}
                     {event.categories?.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-3">
                             {event.categories.slice(0, 3).map(cat => (
@@ -474,37 +497,34 @@ function EventCard({ event }) {
                                                 ${isFinished
                                                     ? 'bg-gray-50 text-gray-400 border-gray-200'
                                                     : 'bg-indigo-50 text-indigo-600 border-indigo-100'}`}>
-                                    <Tag className="w-2.5 h-2.5"/>
-                                    {cat.name}
+                                    <Tag className="w-2.5 h-2.5"/> {cat.name}
                                 </span>
                             ))}
                             {event.categories.length > 3 && (
                                 <span className="text-xs text-gray-400 self-center">
-                                    +{event.categories.length - 3} lainnya
+                                    +{event.categories.length - 3}
                                 </span>
                             )}
                         </div>
                     )}
 
-                    {/* Countdown — hanya saat open */}
-                    {isOpen && daysLeft > 0 && (
-                        <motion.p
-                            animate={{ opacity:[1,0.6,1] }}
+                    {/* Countdown / status info */}
+                    {isOpen && !hasReg && daysLeft > 0 && (
+                        <motion.p animate={{ opacity:[1,0.6,1] }}
                             transition={{ duration:2, repeat:Infinity }}
                             className="flex items-center gap-1 text-xs text-amber-500 mb-3 font-medium">
                             <Clock className="w-3 h-3 shrink-0"/>
                             Pendaftaran tutup dalam {daysLeft} hari
                         </motion.p>
                     )}
-                    {isOpen && daysLeft <= 0 && (
-                        <p className="flex items-center gap-1 text-xs text-red-500 mb-3 font-medium">
+                    {isOpen && !hasReg && daysLeft <= 0 && (
+                        <p className="flex items-center gap-1 text-xs text-red-400 mb-3 font-medium">
                             <AlertCircle className="w-3 h-3 shrink-0"/>
                             Pendaftaran sudah berakhir
                         </p>
                     )}
-                    {isOngoing && (
-                        <motion.p
-                            animate={{ opacity:[1,0.5,1] }}
+                    {isOngoing && !hasReg && (
+                        <motion.p animate={{ opacity:[1,0.5,1] }}
                             transition={{ duration:1.5, repeat:Infinity }}
                             className="flex items-center gap-1 text-xs text-blue-500 mb-3 font-medium">
                             <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"/>
@@ -514,42 +534,83 @@ function EventCard({ event }) {
 
                     <div className="flex-1" />
 
-                    {/* ── CTA BUTTON — beda per status ── */}
-                    {isOpen && (
+                    {/* ════════════════════════════════════
+                        TOMBOL — berubah sesuai status
+                    ════════════════════════════════════ */}
+
+                    {/* Sudah mendaftar (pending/approved/rejected) */}
+                    {hasReg && regCfg && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-2 space-y-2">
+                            <div className={`flex items-start gap-3 px-4 py-3 rounded-2xl
+                                            border ${regCfg.cls}`}>
+                                <regCfg.icon className={`w-4 h-4 shrink-0 mt-0.5 ${regCfg.iconCls}`} />
+                                <div>
+                                    <p className="text-sm font-bold leading-tight">
+                                        {regCfg.label}
+                                    </p>
+                                    <p className="text-xs opacity-75 mt-0.5">
+                                        {regCfg.sublabel}
+                                    </p>
+                                </div>
+                            </div>
+                            {/* Link ke dashboard */}
+                            <Link href={route('user.registrations.index')}
+                                className="flex items-center justify-center gap-2 py-2.5
+                                           rounded-2xl text-xs font-bold border-2 border-indigo-200
+                                           text-indigo-600 bg-white hover:bg-indigo-50
+                                           hover:border-indigo-300 transition-all duration-200">
+                                <ClipboardCheck className="w-3.5 h-3.5"/>
+                                Lihat Status Pendaftaran
+                                <ArrowRight className="w-3.5 h-3.5"/>
+                            </Link>
+                        </motion.div>
+                    )}
+
+                    {/* Belum mendaftar + open */}
+                    {!hasReg && isOpen && daysLeft > 0 && (
                         <motion.div whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}>
                             <Link href={route('user.registrations.create', event.id)}
-                                className="flex items-center justify-center gap-2 mt-2 py-2.5
-                                           rounded-2xl text-sm font-bold transition-all duration-300
+                                className="relative flex items-center justify-center gap-2 mt-2
+                                           py-2.5 rounded-2xl text-sm font-bold overflow-hidden
                                            bg-gradient-to-br from-indigo-600 to-blue-600 text-white
                                            shadow-md shadow-indigo-200 hover:-translate-y-0.5
-                                           hover:shadow-lg hover:shadow-indigo-300">
+                                           hover:shadow-lg hover:shadow-indigo-300 transition-all
+                                           duration-300">
+                                <motion.div
+                                    className="absolute inset-0 bg-gradient-to-r from-transparent
+                                               via-white/15 to-transparent -skew-x-12"
+                                    animate={{ x: ['-150%','150%'] }}
+                                    transition={{ duration:3, repeat:Infinity, repeatDelay:2 }} />
                                 Daftar Sekarang <ArrowRight className="w-3.5 h-3.5"/>
                             </Link>
                         </motion.div>
                     )}
 
-                    {isOngoing && (
+                    {/* Belum mendaftar + ongoing */}
+                    {!hasReg && isOngoing && (
                         <div className="mt-2 py-2.5 rounded-2xl text-sm font-bold text-center
                                         bg-blue-50 text-blue-600 border border-blue-200">
                             🏃 Sedang Berlangsung
                         </div>
                     )}
 
-                    {isFinished && (
+                    {/* Belum mendaftar + finished */}
+                    {!hasReg && isFinished && (
                         <div className="mt-2 space-y-2">
-                            {/* Info selesai */}
                             <div className="py-2.5 rounded-2xl text-sm font-bold text-center
                                             bg-gray-100 text-gray-500 flex items-center
                                             justify-center gap-2">
                                 <CheckCircle2 className="w-4 h-4 text-gray-400"/>
                                 Event Telah Berakhir
                             </div>
-                            {/* Tombol lihat hasil — jika event finished */}
                             {event.status === 'finished' && (
                                 <Link href={route('user.results.index')}
                                     className="flex items-center justify-center gap-2 py-2
-                                               rounded-2xl text-xs font-semibold
-                                               text-indigo-600 bg-indigo-50 border border-indigo-100
+                                               rounded-2xl text-xs font-semibold text-indigo-600
+                                               bg-indigo-50 border border-indigo-100
                                                hover:bg-indigo-100 transition-colors duration-200">
                                     <Eye className="w-3.5 h-3.5"/>
                                     Lihat Hasil Penilaian
@@ -558,15 +619,8 @@ function EventCard({ event }) {
                         </div>
                     )}
 
-                    {isDraft && (
-                        <div className="mt-2 py-2.5 rounded-2xl text-sm font-bold text-center
-                                        bg-yellow-50 text-yellow-600 border border-yellow-200">
-                            ⏳ Belum Dibuka
-                        </div>
-                    )}
-
-                    {/* Closed (pendaftaran tutup tapi event belum mulai) */}
-                    {event.status === 'closed' && (
+                    {/* Status closed */}
+                    {!hasReg && event.status === 'closed' && (
                         <div className="mt-2 py-2.5 rounded-2xl text-sm font-bold text-center
                                         bg-red-50 text-red-500 border border-red-100">
                             🔒 Pendaftaran Ditutup

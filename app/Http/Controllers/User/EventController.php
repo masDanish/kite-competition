@@ -14,24 +14,21 @@ class EventController extends Controller
 {
     $events = Event::with(['categories'])
         ->where('status', '!=', 'draft')
-
-        // FILTER STATUS
-        ->when($request->status, fn($q) =>
-            $q->where('status', $request->status)
-        )
-
         ->when($request->search, fn($q) =>
             $q->where('title', 'like', "%{$request->search}%"))
-
         ->withCount('registrations')
-
         ->orderByRaw("FIELD(status, 'open', 'ongoing', 'closed', 'finished')")
         ->paginate(9)
         ->withQueryString();
 
+    // Ambil semua event_id yang sudah didaftarkan user ini
+    $myRegistrations = \App\Models\EventRegistration::where('user_id', Auth::id())
+        ->pluck('status', 'event_id'); // [event_id => status]
+
     return Inertia::render('User/Events/Index', [
-        'events'  => $events,
-        'filters' => $request->only(['search', 'status']),
+        'events'          => $events,
+        'filters'         => $request->only(['search']),
+        'myRegistrations' => $myRegistrations, // kirim ke frontend
     ]);
 }
 
