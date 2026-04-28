@@ -885,7 +885,7 @@ export default function Welcome({ auth = { user: null } }) {
                         <div className="pt-8 flex flex-col md:flex-row justify-between
                                         items-center gap-4 text-slate-500 text-sm">
                             <p>© {new Date().getFullYear()} Kite Competition. All rights reserved.</p>
-                            <p>Made with ❤️ by Mas Mas RPL</p>
+                            <p>Made with ❤️ by Mas Mas RPL dan TKJ</p>
                         </div>
                     </div>
                 </footer>
