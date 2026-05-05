@@ -65,13 +65,13 @@ function SectionCard({ icon: Icon, iconBg, iconColor, title, children, delay = 0
             variants={fadeUp} initial="hidden" animate="show"
             transition={{ delay }}
             className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100">
+            <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-gray-100">
                 <div className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center shrink-0`}>
                     <Icon className={`w-4 h-4 ${iconColor}`} />
                 </div>
-                <h2 className="font-bold text-gray-800">{title}</h2>
+                <h2 className="font-bold text-gray-800 text-sm sm:text-base">{title}</h2>
             </div>
-            <div className="p-6">{children}</div>
+            <div className="p-4 sm:p-6">{children}</div>
         </motion.div>
     );
 }
@@ -102,30 +102,30 @@ export function AnnouncementsCreate({ events }) {
                 initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 className="relative overflow-hidden rounded-3xl bg-gradient-to-br
-                           from-slate-800 via-indigo-900 to-blue-900 p-6 mb-8 text-white">
+                           from-slate-800 via-indigo-900 to-blue-900 p-4 sm:p-6 mb-6 sm:mb-8 text-white">
                 <div className="absolute inset-0">
-                    <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full translate-x-1/3 -translate-y-1/3" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/10 rounded-full -translate-x-1/4 translate-y-1/4" />
+                    <div className="absolute top-0 right-0 w-48 sm:w-72 h-48 sm:h-72 bg-white/5 rounded-full translate-x-1/3 -translate-y-1/3" />
+                    <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 bg-indigo-400/10 rounded-full -translate-x-1/4 translate-y-1/4" />
                 </div>
-                <div className="relative z-10 flex justify-between items-center">
-                    <div>
+                <div className="relative z-10 flex justify-between items-center gap-4">
+                    <div className="min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                            <PlusCircle className="w-4 h-4 text-indigo-300" />
-                            <span className="text-indigo-300 text-sm font-medium">Panel Administrator</span>
+                            <PlusCircle className="w-4 h-4 text-indigo-300 shrink-0" />
+                            <span className="text-indigo-300 text-xs sm:text-sm font-medium">Panel Administrator</span>
                         </div>
-                        <h1 className="text-2xl font-black">Buat Pengumuman 📢</h1>
-                        <p className="text-slate-300 text-sm mt-1">
+                        <h1 className="text-xl sm:text-2xl font-black">Buat Pengumuman 📢</h1>
+                        <p className="text-slate-300 text-xs sm:text-sm mt-1">
                             Isi detail pengumuman yang akan ditampilkan kepada peserta.
                         </p>
                     </div>
                     <motion.div
                         animate={{ rotate: [0, 8, -4, 0], y: [0, -6, 0] }}
                         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="text-5xl hidden md:block">📢</motion.div>
+                        className="text-4xl sm:text-5xl hidden sm:block shrink-0">📢</motion.div>
                 </div>
             </motion.div>
 
-            <form onSubmit={submit} className="max-w-2xl space-y-6">
+            <form onSubmit={submit} className="w-full max-w-2xl space-y-6">
                 <AnnouncementFormFields
                     data={data} setData={setData}
                     errors={errors} events={events}
@@ -166,19 +166,19 @@ export function AnnouncementsEdit({ announcement, events }) {
                 initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 className="relative overflow-hidden rounded-3xl bg-gradient-to-br
-                           from-slate-800 via-indigo-900 to-blue-900 p-6 mb-8 text-white">
+                           from-slate-800 via-indigo-900 to-blue-900 p-4 sm:p-6 mb-6 sm:mb-8 text-white">
                 <div className="absolute inset-0">
-                    <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full translate-x-1/3 -translate-y-1/3" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/10 rounded-full -translate-x-1/4 translate-y-1/4" />
+                    <div className="absolute top-0 right-0 w-48 sm:w-72 h-48 sm:h-72 bg-white/5 rounded-full translate-x-1/3 -translate-y-1/3" />
+                    <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 bg-indigo-400/10 rounded-full -translate-x-1/4 translate-y-1/4" />
                 </div>
-                <div className="relative z-10 flex justify-between items-center">
-                    <div>
+                <div className="relative z-10 flex justify-between items-center gap-4">
+                    <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                            <Pencil className="w-4 h-4 text-indigo-300" />
-                            <span className="text-indigo-300 text-sm font-medium">Panel Administrator</span>
+                            <Pencil className="w-4 h-4 text-indigo-300 shrink-0" />
+                            <span className="text-indigo-300 text-xs sm:text-sm font-medium">Panel Administrator</span>
                         </div>
-                        <h1 className="text-2xl font-black">Edit Pengumuman ✏️</h1>
-                        <p className="text-slate-300 text-sm mt-1 max-w-md truncate">
+                        <h1 className="text-xl sm:text-2xl font-black">Edit Pengumuman ✏️</h1>
+                        <p className="text-slate-300 text-xs sm:text-sm mt-1 truncate">
                             {announcement.title}
                         </p>
                     </div>
@@ -186,7 +186,7 @@ export function AnnouncementsEdit({ announcement, events }) {
                 </div>
             </motion.div>
 
-            <form onSubmit={submit} className="max-w-2xl space-y-6">
+            <form onSubmit={submit} className="w-full max-w-2xl space-y-6">
                 <AnnouncementFormFields
                     data={data} setData={setData}
                     errors={errors} events={events}
@@ -258,7 +258,8 @@ function AnnouncementFormFields({ data, setData, errors, events }) {
                             <Tag className="w-3 h-3" /> Tipe Pengumuman *
                         </span>
                     </label>
-                    <div className="flex gap-3 flex-wrap">
+                    {/* Grid 2-cols on mobile, flex-wrap on sm+ */}
+                    <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3">
                         {TYPE_OPTS.map(opt => {
                             const Icon      = opt.icon;
                             const isActive  = data.type === opt.value;
@@ -267,15 +268,15 @@ function AnnouncementFormFields({ data, setData, errors, events }) {
                                     key={opt.value}
                                     whileHover={{ scale: 1.04 }}
                                     whileTap={{ scale: 0.97 }}
-                                    className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl
-                                                border-2 cursor-pointer text-sm font-bold
+                                    className={`flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-2.5 rounded-2xl
+                                                border-2 cursor-pointer text-xs sm:text-sm font-bold
                                                 transition-all duration-200
                                                 ${isActive ? opt.active : opt.inactive}`}>
                                     <input type="radio" name="type" value={opt.value}
                                         checked={isActive}
                                         onChange={() => setData('type', opt.value)}
                                         className="hidden" />
-                                    <Icon className="w-3.5 h-3.5" />
+                                    <Icon className="w-3.5 h-3.5 shrink-0" />
                                     {opt.label}
                                 </motion.label>
                             );
@@ -284,7 +285,7 @@ function AnnouncementFormFields({ data, setData, errors, events }) {
                 </div>
 
                 {/* Publish Toggle */}
-                <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center gap-3 sm:gap-4 pt-4 border-t border-gray-100">
                     <button
                         type="button"
                         onClick={() => setData('is_published', !data.is_published)}
@@ -298,7 +299,7 @@ function AnnouncementFormFields({ data, setData, errors, events }) {
                             transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                         />
                     </button>
-                    <div>
+                    <div className="min-w-0">
                         <p className="text-sm font-bold text-gray-700">
                             {data.is_published ? '✅ Langsung tayangkan' : 'Simpan sebagai draft'}
                         </p>
@@ -320,13 +321,13 @@ function FormActions({ processing, submitLabel, backRoute }) {
         <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ delay: 0.25 }}
-            className="flex gap-3 pb-8">
+            className="flex flex-col sm:flex-row gap-3 pb-8">
             <button type="submit" disabled={processing}
-                className="flex items-center gap-2 bg-gradient-to-br from-indigo-600
+                className="flex items-center justify-center gap-2 bg-gradient-to-br from-indigo-600
                            to-blue-600 text-white px-6 py-3 rounded-2xl font-bold text-sm
                            shadow-md shadow-indigo-200 hover:-translate-y-0.5 hover:shadow-lg
                            hover:shadow-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed
-                           disabled:translate-y-0 transition-all duration-200">
+                           disabled:translate-y-0 transition-all duration-200 w-full sm:w-auto">
                 {processing ? (
                     <>
                         <span className="w-4 h-4 border-2 border-white/30 border-t-white
@@ -341,10 +342,10 @@ function FormActions({ processing, submitLabel, backRoute }) {
                 )}
             </button>
             <Link href={backRoute}
-                className="flex items-center gap-2 px-6 py-3 border border-gray-200
+                className="flex items-center justify-center gap-2 px-6 py-3 border border-gray-200
                            rounded-2xl text-sm font-bold text-gray-500 bg-white shadow-sm
                            hover:border-red-200 hover:text-red-500 hover:-translate-y-0.5
-                           transition-all duration-200">
+                           transition-all duration-200 w-full sm:w-auto">
                 <X className="w-4 h-4" /> Batal
             </Link>
         </motion.div>
@@ -354,13 +355,13 @@ function FormActions({ processing, submitLabel, backRoute }) {
 /* ── Publish chip for edit banner ── */
 function PublishStatusChip({ published }) {
     return (
-        <div className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl
-                         font-bold text-sm shrink-0
+        <div className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl
+                         font-bold text-xs sm:text-sm shrink-0
                          ${published
                              ? 'bg-emerald-500/20 border border-emerald-400/30 text-emerald-300'
                              : 'bg-slate-500/20 border border-slate-400/30 text-slate-300'}`}>
-            <span className={`w-2 h-2 rounded-full ${published ? 'bg-emerald-400' : 'bg-slate-400'}`} />
-            {published ? 'Sedang Tayang' : 'Draft'}
+            <span className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full ${published ? 'bg-emerald-400' : 'bg-slate-400'}`} />
+            <span className="hidden xs:inline">{published ? 'Sedang Tayang' : 'Draft'}</span>
         </div>
     );
 }

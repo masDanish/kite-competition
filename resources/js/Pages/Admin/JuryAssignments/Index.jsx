@@ -55,27 +55,27 @@ export default function JuryAssignmentsIndex({ event, availableJury }) {
                 initial={{ opacity: 0, y: -16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="relative overflow-hidden rounded-3xl bg-gradient-to-br
-                           from-slate-800 via-indigo-900 to-blue-900 p-6 mb-8 text-white">
+                className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br
+                           from-slate-800 via-indigo-900 to-blue-900 p-4 sm:p-6 mb-6 sm:mb-8 text-white">
                 <div className="absolute inset-0">
-                    <div className="absolute top-0 right-0 w-72 h-72 bg-white/5
+                    <div className="absolute top-0 right-0 w-48 sm:w-72 h-48 sm:h-72 bg-white/5
                                     rounded-full translate-x-1/3 -translate-y-1/3" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/10
+                    <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 bg-indigo-400/10
                                     rounded-full -translate-x-1/4 translate-y-1/4" />
                 </div>
-                <div className="relative z-10 flex justify-between items-center">
-                    <div>
+                <div className="relative z-10 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                    <div className="min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                            <UserCog className="w-4 h-4 text-indigo-300" />
-                            <span className="text-indigo-300 text-sm font-medium">Panel Administrator</span>
+                            <UserCog className="w-4 h-4 text-indigo-300 shrink-0" />
+                            <span className="text-indigo-300 text-xs sm:text-sm font-medium">Panel Administrator</span>
                         </div>
-                        <h1 className="text-2xl font-black">Penugasan Juri 👨‍⚖️</h1>
-                        <p className="text-slate-300 text-sm mt-1 truncate max-w-lg">
+                        <h1 className="text-xl sm:text-2xl font-black">Penugasan Juri 👨‍⚖️</h1>
+                        <p className="text-slate-300 text-xs sm:text-sm mt-1 truncate max-w-[260px] sm:max-w-lg">
                             {event.title}
                         </p>
                     </div>
                     {/* Stats chips */}
-                    <div className="hidden md:flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
                         <span className="flex items-center gap-1.5 bg-emerald-500/20 border
                                          border-emerald-400/30 text-emerald-300 text-xs font-bold
                                          px-3 py-1.5 rounded-full">
@@ -94,21 +94,21 @@ export default function JuryAssignmentsIndex({ event, availableJury }) {
                 </div>
             </motion.div>
 
-            <div className="max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
 
                 {/* ── Form Assign ── */}
                 <motion.div
                     initial={{ opacity: 0, x: -24 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, delay: 0.1 }}
-                    className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100">
-                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="flex items-center gap-3 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center shrink-0">
                             <PlusCircle className="w-4 h-4 text-indigo-600" />
                         </div>
-                        <h2 className="font-bold text-gray-800">Tambah Juri</h2>
+                        <h2 className="font-bold text-gray-800 text-sm sm:text-base">Tambah Juri</h2>
                     </div>
-                    <form onSubmit={assign} className="p-6 space-y-4">
+                    <form onSubmit={assign} className="p-4 sm:p-6 space-y-4">
                         <div>
                             <label className={labelClass}>
                                 <span className="flex items-center gap-1">
@@ -145,7 +145,7 @@ export default function JuryAssignmentsIndex({ event, availableJury }) {
                                        py-3 rounded-2xl text-sm font-bold shadow-md shadow-indigo-200
                                        hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300
                                        disabled:opacity-50 disabled:cursor-not-allowed
-                                       disabled:translate-y-0 transition-all duration-200">
+                                       disabled:translate-y-0 transition-all duration-200 active:scale-95">
                             {processing ? (
                                 <>
                                     <span className="w-4 h-4 border-2 border-white/30
@@ -167,25 +167,25 @@ export default function JuryAssignmentsIndex({ event, availableJury }) {
                     initial={{ opacity: 0, x: 24 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, delay: 0.15 }}
-                    className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
                                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
                             </div>
-                            <h2 className="font-bold text-gray-800">Juri Ditugaskan</h2>
+                            <h2 className="font-bold text-gray-800 text-sm sm:text-base">Juri Ditugaskan</h2>
                         </div>
                         {assignments.length > 0 && (
                             <span className="bg-indigo-100 text-indigo-700 text-xs font-bold
-                                             px-2.5 py-1 rounded-full border border-indigo-200">
+                                             px-2.5 py-1 rounded-full border border-indigo-200 shrink-0">
                                 {assignments.length} juri
                             </span>
                         )}
                     </div>
 
-                    <div className="p-6">
+                    <div className="p-4 sm:p-6">
                         {assignments.length === 0 ? (
-                            <div className="flex flex-col items-center py-12 text-gray-400">
+                            <div className="flex flex-col items-center py-10 sm:py-12 text-gray-400">
                                 <motion.div animate={{ y: [0, -8, 0] }}
                                     transition={{ duration: 3, repeat: Infinity }}
                                     className="text-4xl mb-3">👨‍⚖️</motion.div>
@@ -221,32 +221,32 @@ function AssignmentCard({ assignment: a, onToggle, onRemove }) {
             variants={fadeUp}
             layout
             exit={{ opacity: 0, scale: 0.95 }}
-            className={`flex items-center justify-between p-4 rounded-2xl border
-                        transition-all duration-200
+            className={`flex items-start sm:items-center justify-between p-3 sm:p-4 rounded-2xl border
+                        transition-all duration-200 gap-2
                         ${a.is_active
                             ? 'border-emerald-200 bg-emerald-50/50'
                             : 'border-gray-200 bg-gray-50/50 opacity-60'}`}>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 {/* Avatar */}
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center
+                <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center
                                  text-white font-bold text-sm shrink-0
                                  ${a.is_active
                                      ? 'bg-gradient-to-br from-emerald-400 to-teal-500'
                                      : 'bg-gradient-to-br from-gray-300 to-gray-400'}`}>
                     {a.jury?.name?.charAt(0).toUpperCase() ?? 'J'}
                 </div>
-                <div>
-                    <p className="font-bold text-gray-800 text-sm">{a.jury?.name}</p>
+                <div className="min-w-0">
+                    <p className="font-bold text-gray-800 text-sm truncate">{a.jury?.name}</p>
                     <span className="flex items-center gap-1 text-xs text-gray-500">
-                        <Tag className="w-3 h-3" />
-                        {a.category?.name ?? 'Semua Kategori'}
+                        <Tag className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{a.category?.name ?? 'Semua Kategori'}</span>
                     </span>
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-                {/* Status badge */}
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full hidden sm:inline-flex
+            <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                {/* Status badge — hidden on xs */}
+                <span className={`text-xs font-bold px-2 py-1 rounded-full hidden sm:inline-flex
                                   items-center gap-1.5
                                   ${a.is_active
                                       ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
@@ -258,8 +258,8 @@ function AssignmentCard({ assignment: a, onToggle, onRemove }) {
 
                 {/* Toggle */}
                 <button onClick={onToggle}
-                    className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1.5
-                                rounded-xl border transition-all duration-200 hover:-translate-y-0.5
+                    className={`flex items-center gap-1 text-xs font-bold px-2 sm:px-2.5 py-1.5
+                                rounded-xl border transition-all duration-200 active:scale-95
                                 ${a.is_active
                                     ? 'bg-amber-50 text-amber-600 border-amber-100 hover:bg-amber-100'
                                     : 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100'}`}>
@@ -273,9 +273,9 @@ function AssignmentCard({ assignment: a, onToggle, onRemove }) {
 
                 {/* Remove */}
                 <button onClick={onRemove}
-                    className="flex items-center gap-1 text-xs font-bold px-2.5 py-1.5
+                    className="flex items-center gap-1 text-xs font-bold px-2 sm:px-2.5 py-1.5
                                bg-red-50 text-red-600 border border-red-100 rounded-xl
-                               hover:bg-red-100 hover:-translate-y-0.5 transition-all duration-200">
+                               hover:bg-red-100 active:scale-95 transition-all duration-200">
                     <Trash2 className="w-3.5 h-3.5" />
                 </button>
             </div>

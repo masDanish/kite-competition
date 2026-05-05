@@ -16,23 +16,22 @@ const stagger = { show: { transition: { staggerChildren: 0.06 } } };
 
 const MEDAL_CFG = [
     {
-        emoji: '🥇', podiumH: 'h-32',
+        emoji: '🥇', podiumH: 'h-28 sm:h-32',
         podiumBg: 'from-amber-300 to-yellow-400',
         shadow: 'shadow-amber-200', ring: 'ring-amber-300', nameBold: true,
     },
     {
-        emoji: '🥈', podiumH: 'h-24',
+        emoji: '🥈', podiumH: 'h-20 sm:h-24',
         podiumBg: 'from-slate-300 to-gray-400',
         shadow: 'shadow-gray-200', ring: 'ring-gray-300', nameBold: false,
     },
     {
-        emoji: '🥉', podiumH: 'h-16',
+        emoji: '🥉', podiumH: 'h-14 sm:h-16',
         podiumBg: 'from-orange-300 to-amber-400',
         shadow: 'shadow-orange-200', ring: 'ring-orange-300', nameBold: false,
     },
 ];
 
-// Warna unik per kategori (cycling jika > 6 kategori)
 const CATEGORY_COLORS = [
     { grad: 'from-indigo-500 to-blue-600',   light: 'bg-indigo-50',  border: 'border-indigo-200', text: 'text-indigo-700',  badge: 'bg-indigo-100 text-indigo-700 border-indigo-200'  },
     { grad: 'from-violet-500 to-purple-600', light: 'bg-violet-50',  border: 'border-violet-200', text: 'text-violet-700',  badge: 'bg-violet-100 text-violet-700 border-violet-200'  },
@@ -44,7 +43,6 @@ const CATEGORY_COLORS = [
 
 export default function Leaderboard({ event, leaderboard, criteria, jury_count }) {
 
-    // Kelompokkan leaderboard per kategori, urutkan skor per kategori
     const grouped = leaderboard.reduce((acc, item) => {
         const key = item.category?.name ?? 'Umum';
         if (!acc[key]) acc[key] = [];
@@ -52,21 +50,18 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
         return acc;
     }, {});
 
-    // Sort tiap kategori berdasarkan final_score DESC
     Object.keys(grouped).forEach(key => {
         grouped[key].sort((a, b) => b.final_score - a.final_score);
     });
 
     const categoryNames = Object.keys(grouped);
-
-    // State tab aktif
     const [activeTab, setActiveTab] = useState(categoryNames[0] ?? null);
 
     const stats = [
         { label: 'Total Karya',       value: leaderboard.length,    icon: BarChart3, grad: 'from-indigo-500 to-blue-600',   shadow: 'shadow-indigo-200'  },
         { label: 'Total Kategori',    value: categoryNames.length,  icon: Tag,       grad: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-200'  },
         { label: 'Jumlah Juri',       value: jury_count,            icon: UserCog,   grad: 'from-emerald-500 to-teal-600',  shadow: 'shadow-emerald-200' },
-        { label: 'Kriteria Penilaian',value: criteria.length,       icon: Star,      grad: 'from-amber-500 to-orange-500',  shadow: 'shadow-amber-200'   },
+        { label: 'Kriteria',          value: criteria.length,       icon: Star,      grad: 'from-amber-500 to-orange-500',  shadow: 'shadow-amber-200'   },
     ];
 
     return (
@@ -78,12 +73,12 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                 initial={{ opacity: 0, y: -16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="relative overflow-hidden rounded-3xl bg-gradient-to-br
-                           from-slate-800 via-indigo-900 to-blue-900 p-6 mb-8 text-white">
+                className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br
+                           from-slate-800 via-indigo-900 to-blue-900 p-4 sm:p-6 mb-6 sm:mb-8 text-white">
                 <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 right-0 w-72 h-72 bg-white/5
+                    <div className="absolute top-0 right-0 w-48 sm:w-72 h-48 sm:h-72 bg-white/5
                                     rounded-full translate-x-1/3 -translate-y-1/3" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/10
+                    <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 bg-indigo-400/10
                                     rounded-full -translate-x-1/4 translate-y-1/4" />
                     <div className="absolute inset-0 opacity-10"
                         style={{
@@ -92,24 +87,24 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                             backgroundSize: '50px 50px',
                         }} />
                 </div>
-                <div className="relative z-10 flex justify-between items-center">
-                    <div>
+                <div className="relative z-10 flex justify-between items-start sm:items-center gap-3">
+                    <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                            <Trophy className="w-4 h-4 text-amber-300" />
-                            <span className="text-indigo-300 text-sm font-medium">
+                            <Trophy className="w-4 h-4 text-amber-300 shrink-0" />
+                            <span className="text-indigo-300 text-xs sm:text-sm font-medium">
                                 Leaderboard Event
                             </span>
                         </div>
-                        <h1 className="text-2xl font-black">🏆 Leaderboard</h1>
-                        <p className="text-slate-300 text-sm mt-1 max-w-lg truncate">
+                        <h1 className="text-xl sm:text-2xl font-black">🏆 Leaderboard</h1>
+                        <p className="text-slate-300 text-xs sm:text-sm mt-1 truncate max-w-[260px] sm:max-w-lg">
                             {event.title}
                         </p>
-                        <div className="flex flex-wrap gap-2 mt-3">
-                            {categoryNames.map((name, i) => (
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
+                            {categoryNames.map((name) => (
                                 <span key={name}
                                     className="text-xs bg-white/15 backdrop-blur-sm border
-                                               border-white/20 text-white px-3 py-1 rounded-full
-                                               font-medium">
+                                               border-white/20 text-white px-2.5 sm:px-3 py-0.5 sm:py-1
+                                               rounded-full font-medium">
                                     {name}
                                 </span>
                             ))}
@@ -118,7 +113,7 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                     <motion.div
                         animate={{ rotate: [0, 8, -4, 0], y: [0, -6, 0] }}
                         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="text-5xl hidden md:block">
+                        className="text-4xl sm:text-5xl hidden sm:block shrink-0">
                         🏆
                     </motion.div>
                 </div>
@@ -127,19 +122,19 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
             {/* ── Stat Cards ── */}
             <motion.div
                 initial="hidden" animate="show" variants={stagger}
-                className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 {stats.map((s, i) => (
                     <motion.div key={i} variants={fadeUp}
                         whileHover={{ y: -4, scale: 1.03 }}
-                        className={`bg-white rounded-2xl p-5 shadow-lg ${s.shadow}
-                                    border border-gray-100 flex items-center gap-4`}>
-                        <div className={`w-12 h-12 bg-gradient-to-br ${s.grad} rounded-xl
+                        className={`bg-white rounded-2xl p-3 sm:p-5 shadow-lg ${s.shadow}
+                                    border border-gray-100 flex items-center gap-3 sm:gap-4`}>
+                        <div className={`w-9 h-9 sm:w-12 sm:h-12 bg-gradient-to-br ${s.grad} rounded-xl
                                          flex items-center justify-center shadow-md shrink-0`}>
-                            <s.icon className="w-5 h-5 text-white" />
+                            <s.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
                         <div>
-                            <p className="text-2xl font-black text-gray-800">{s.value}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
+                            <p className="text-xl sm:text-2xl font-black text-gray-800">{s.value}</p>
+                            <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 leading-tight">{s.label}</p>
                         </div>
                     </motion.div>
                 ))}
@@ -151,7 +146,7 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 }}
-                    className="flex flex-wrap gap-2 mb-6">
+                    className="flex flex-wrap gap-2 mb-5 sm:mb-6">
                     {categoryNames.map((name, i) => {
                         const color   = CATEGORY_COLORS[i % CATEGORY_COLORS.length];
                         const isActive = activeTab === name;
@@ -161,16 +156,16 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                                 onClick={() => setActiveTab(name)}
                                 whileHover={{ y: -2 }}
                                 whileTap={{ scale: 0.97 }}
-                                className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl
-                                            text-sm font-bold border-2 transition-all duration-200
+                                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5
+                                            rounded-2xl text-xs sm:text-sm font-bold border-2
+                                            transition-all duration-200
                                             ${isActive
                                                 ? `bg-gradient-to-r ${color.grad} text-white
                                                    border-transparent shadow-lg`
-                                                : `bg-white ${color.border} ${color.text}
-                                                   hover:${color.light}`}`}>
-                                <Tag className="w-3.5 h-3.5" />
-                                {name}
-                                <span className={`text-xs px-2 py-0.5 rounded-full font-black
+                                                : `bg-white ${color.border} ${color.text}`}`}>
+                                <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                                <span className="truncate max-w-[100px] sm:max-w-none">{name}</span>
+                                <span className={`text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-black shrink-0
                                                   ${isActive
                                                       ? 'bg-white/20 text-white'
                                                       : color.badge + ' border'}`}>
@@ -198,16 +193,16 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                             transition={{ duration: 0.35 }}>
 
                             {/* Kategori header */}
-                            <div className={`flex items-center justify-between mb-5
-                                             pb-4 border-b-2 ${color.border}`}>
+                            <div className={`flex flex-col sm:flex-row sm:items-center justify-between
+                                             gap-3 mb-4 sm:mb-5 pb-4 border-b-2 ${color.border}`}>
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-10 h-10 bg-gradient-to-br ${color.grad}
+                                    <div className={`w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br ${color.grad}
                                                      rounded-xl flex items-center justify-center
-                                                     shadow-md`}>
-                                        <Medal className="w-5 h-5 text-white" />
+                                                     shadow-md shrink-0`}>
+                                        <Medal className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                                     </div>
                                     <div>
-                                        <h2 className={`font-black text-xl ${color.text}`}>
+                                        <h2 className={`font-black text-lg sm:text-xl ${color.text}`}>
                                             {catName}
                                         </h2>
                                         <p className="text-xs text-gray-400">
@@ -216,11 +211,11 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                                     </div>
                                 </div>
                                 <a href={route('admin.reports.export', event.id)}
-                                    className={`flex items-center gap-2 px-4 py-2 bg-gradient-to-r
+                                    className={`flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r
                                                ${color.grad} text-white text-xs font-bold rounded-2xl
                                                shadow-md hover:-translate-y-0.5 hover:shadow-lg
-                                               transition-all duration-200`}>
-                                    <Download className="w-3.5 h-3.5" />
+                                               active:scale-95 transition-all duration-200 self-start sm:self-auto`}>
+                                    <Download className="w-3.5 h-3.5 shrink-0" />
                                     Export Excel
                                 </a>
                             </div>
@@ -231,23 +226,23 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                                     initial={{ opacity: 0, scale: 0.97 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.1 }}
-                                    className={`relative overflow-hidden rounded-3xl
-                                               ${color.light} border ${color.border} p-8 mb-6`}>
-                                    <div className="absolute top-0 right-0 w-40 h-40 bg-white/40
-                                                    rounded-full translate-x-1/3 -translate-y-1/3" />
-                                    <div className="absolute bottom-0 left-0 w-28 h-28 bg-white/30
-                                                    rounded-full -translate-x-1/4 translate-y-1/4" />
+                                    className={`relative overflow-hidden rounded-2xl sm:rounded-3xl
+                                               ${color.light} border ${color.border}
+                                               p-4 sm:p-8 mb-5 sm:mb-6`}>
+                                    <div className="absolute top-0 right-0 w-32 sm:w-40 h-32 sm:h-40
+                                                    bg-white/40 rounded-full translate-x-1/3 -translate-y-1/3" />
+                                    <div className="absolute bottom-0 left-0 w-20 sm:w-28 h-20 sm:h-28
+                                                    bg-white/30 rounded-full -translate-x-1/4 translate-y-1/4" />
 
                                     <h3 className={`relative z-10 text-center font-black
-                                                    text-base mb-6 flex items-center
+                                                    text-sm sm:text-base mb-4 sm:mb-6 flex items-center
                                                     justify-center gap-2 ${color.text}`}>
                                         <Trophy className="w-4 h-4" />
                                         Podium — {catName}
                                     </h3>
 
-                                    {/* Podium: 2nd left, 1st center, 3rd right */}
                                     <div className="relative z-10 flex justify-center items-end
-                                                    gap-4 md:gap-8">
+                                                    gap-2 sm:gap-4 md:gap-8">
                                         {[1, 0, 2].map(rank => {
                                             const cfg  = MEDAL_CFG[rank];
                                             const item = items[rank];
@@ -258,44 +253,43 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                                                     initial={{ opacity: 0, y: 30 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ delay: 0.2 + rank * 0.08, duration: 0.5 }}
-                                                    className="flex flex-col items-center gap-2
-                                                               w-28 md:w-36">
-                                                    {/* Avatar dengan initial */}
+                                                    className="flex flex-col items-center gap-1.5 sm:gap-2
+                                                               w-20 sm:w-28 md:w-36">
                                                     <motion.div
                                                         animate={rank === 0 ? { y: [0, -6, 0] } : {}}
                                                         transition={{ duration: 3, repeat: Infinity }}
-                                                        className={`w-14 h-14 rounded-2xl
+                                                        className={`w-11 h-11 sm:w-14 sm:h-14 rounded-2xl
                                                                     bg-gradient-to-br ${cfg.podiumBg}
                                                                     flex flex-col items-center
                                                                     justify-center shadow-lg ${cfg.shadow}
                                                                     ring-2 ${cfg.ring}`}>
-                                                        <span className="text-2xl leading-none">
+                                                        <span className="text-xl sm:text-2xl leading-none">
                                                             {cfg.emoji}
                                                         </span>
                                                     </motion.div>
 
-                                                    {/* Nama + kategori */}
-                                                    <div className="text-center">
-                                                        <p className={`text-xs leading-tight text-gray-800
+                                                    <div className="text-center w-full px-1">
+                                                        <p className={`text-[10px] sm:text-xs leading-tight
+                                                                       text-gray-800 truncate
                                                                        ${cfg.nameBold ? 'font-black' : 'font-semibold'}`}>
                                                             {item.user.name}
                                                         </p>
-                                                        <p className="text-[10px] text-gray-500 mt-0.5 truncate max-w-full">
+                                                        <p className="text-[9px] sm:text-[10px] text-gray-500
+                                                                      mt-0.5 truncate">
                                                             {item.title}
                                                         </p>
                                                     </div>
 
-                                                    {/* Podium bar dengan skor */}
                                                     <div className={`w-full ${cfg.podiumH}
                                                                      bg-gradient-to-t ${cfg.podiumBg}
                                                                      rounded-t-2xl shadow-md ${cfg.shadow}
                                                                      flex flex-col items-center
                                                                      justify-start pt-2 gap-0.5`}>
-                                                        <span className="font-black text-white text-sm
+                                                        <span className="font-black text-white text-xs sm:text-sm
                                                                          drop-shadow">
                                                             {item.final_score}
                                                         </span>
-                                                        <span className="text-white/80 text-[10px] font-medium">
+                                                        <span className="text-white/80 text-[9px] sm:text-[10px] font-medium">
                                                             poin
                                                         </span>
                                                     </div>
@@ -306,18 +300,18 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                                 </motion.div>
                             )}
 
-                            {/* Tabel lengkap kategori ini */}
-                            <div className="bg-white rounded-3xl shadow-sm border border-gray-100
-                                            overflow-hidden mb-8">
+                            {/* Tabel lengkap */}
+                            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-sm
+                                            border border-gray-100 overflow-hidden mb-6 sm:mb-8">
 
-                                {/* Table header */}
-                                <div className={`px-5 py-3 bg-gradient-to-r ${color.grad}`}>
+                                {/* Table header — hidden on mobile */}
+                                <div className={`hidden sm:block px-4 sm:px-5 py-3
+                                                 bg-gradient-to-r ${color.grad}`}>
                                     <div className="grid grid-cols-12 text-xs font-bold text-white
                                                     uppercase tracking-wider">
                                         <span className="col-span-1 text-center">Rank</span>
                                         <span className="col-span-3">Peserta</span>
                                         <span className="col-span-3">Judul Karya</span>
-                                        {/* Kriteria dinamis — tampil jika cukup lebar */}
                                         {criteria.slice(0, 3).map(c => (
                                             <span key={c.id}
                                                 className="col-span-1 text-center hidden lg:block truncate"
@@ -329,7 +323,13 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                                     </div>
                                 </div>
 
-                                {/* Rows */}
+                                {/* Mobile header */}
+                                <div className={`sm:hidden px-4 py-2.5 bg-gradient-to-r ${color.grad}`}>
+                                    <p className="text-xs font-bold text-white uppercase tracking-wider">
+                                        Peringkat Peserta
+                                    </p>
+                                </div>
+
                                 <div className="divide-y divide-gray-50">
                                     <AnimatePresence>
                                         {items.map((item, idx) => (
@@ -344,9 +344,9 @@ export default function Leaderboard({ event, leaderboard, criteria, jury_count }
                                     </AnimatePresence>
                                 </div>
 
-                                {/* Footer summary */}
-                                <div className={`px-5 py-3 ${color.light} border-t ${color.border}
-                                                flex items-center justify-between`}>
+                                <div className={`px-4 sm:px-5 py-3 ${color.light} border-t ${color.border}
+                                                flex flex-col sm:flex-row sm:items-center
+                                                justify-between gap-1`}>
                                     <span className={`text-xs font-semibold ${color.text}`}>
                                         Total {items.length} peserta di kategori {catName}
                                     </span>
@@ -383,49 +383,45 @@ function LeaderboardRow({ item, idx, criteria, color }) {
 
     return (
         <>
+            {/* Desktop row */}
             <motion.div
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.04, duration: 0.4 }}
-                className={`grid grid-cols-12 items-center px-5 py-3.5
+                className={`hidden sm:grid grid-cols-12 items-center px-4 sm:px-5 py-3 sm:py-3.5
                             ${rowBg} hover:bg-opacity-100 transition-all duration-150
                             cursor-pointer group`}
                 onClick={() => setExpanded(!expanded)}>
 
-                {/* Rank */}
                 <div className="col-span-1 flex justify-center">
                     {isTop3 ? (
-                        <span className="text-xl">{medals[idx]}</span>
+                        <span className="text-lg sm:text-xl">{medals[idx]}</span>
                     ) : (
-                        <span className="inline-flex items-center justify-center w-7 h-7
+                        <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7
                                          bg-gray-100 rounded-lg text-xs font-black text-gray-500">
                             {idx + 1}
                         </span>
                     )}
                 </div>
 
-                {/* Peserta */}
-                <div className="col-span-3 flex items-center gap-2.5">
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center
+                <div className="col-span-3 flex items-center gap-2">
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center
                                      text-white text-xs font-bold shrink-0
                                      bg-gradient-to-br ${isTop3
                                          ? 'from-amber-400 to-orange-500'
                                          : color.grad}`}>
                         {item.user.name.charAt(0).toUpperCase()}
                     </div>
-                    <div className="min-w-0">
-                        <p className={`text-sm truncate ${isTop3 ? 'font-black text-gray-800' : 'font-semibold text-gray-700'}`}>
-                            {item.user.name}
-                        </p>
-                    </div>
+                    <p className={`text-xs sm:text-sm truncate
+                                   ${isTop3 ? 'font-black text-gray-800' : 'font-semibold text-gray-700'}`}>
+                        {item.user.name}
+                    </p>
                 </div>
 
-                {/* Judul karya */}
                 <div className="col-span-3 min-w-0">
                     <p className="text-xs text-gray-500 italic truncate">{item.title}</p>
                 </div>
 
-                {/* Skor per kriteria (3 pertama, desktop only) */}
                 {criteria.slice(0, 3).map(c => (
                     <div key={c.id} className="col-span-1 text-center hidden lg:block">
                         <span className="text-xs text-gray-600 font-medium">
@@ -434,9 +430,8 @@ function LeaderboardRow({ item, idx, criteria, color }) {
                     </div>
                 ))}
 
-                {/* Skor akhir + expand button */}
-                <div className="col-span-1 flex items-center justify-end gap-2">
-                    <span className={`font-black text-lg ${scoreColor}`}>
+                <div className="col-span-1 flex items-center justify-end gap-1.5">
+                    <span className={`font-black text-base sm:text-lg ${scoreColor}`}>
                         {item.final_score}
                     </span>
                     <motion.div
@@ -448,7 +443,51 @@ function LeaderboardRow({ item, idx, criteria, color }) {
                 </div>
             </motion.div>
 
-            {/* Expanded: semua skor per kriteria */}
+            {/* Mobile row */}
+            <motion.div
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.04, duration: 0.4 }}
+                className={`sm:hidden flex items-center justify-between px-3 py-3
+                            ${rowBg} cursor-pointer`}
+                onClick={() => setExpanded(!expanded)}>
+                <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="shrink-0 w-7 flex justify-center">
+                        {isTop3 ? (
+                            <span className="text-lg">{medals[idx]}</span>
+                        ) : (
+                            <span className="inline-flex items-center justify-center w-6 h-6
+                                             bg-gray-100 rounded-lg text-xs font-black text-gray-500">
+                                {idx + 1}
+                            </span>
+                        )}
+                    </div>
+                    <div className={`w-7 h-7 rounded-xl flex items-center justify-center
+                                     text-white text-xs font-bold shrink-0
+                                     bg-gradient-to-br ${isTop3
+                                         ? 'from-amber-400 to-orange-500'
+                                         : color.grad}`}>
+                        {item.user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                        <p className={`text-xs truncate ${isTop3 ? 'font-black text-gray-800' : 'font-semibold text-gray-700'}`}>
+                            {item.user.name}
+                        </p>
+                        <p className="text-[10px] text-gray-400 italic truncate">{item.title}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                    <span className={`font-black text-base ${scoreColor}`}>{item.final_score}</span>
+                    <motion.div
+                        animate={{ rotate: expanded ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-gray-300">
+                        <ChevronDown className="w-3.5 h-3.5" />
+                    </motion.div>
+                </div>
+            </motion.div>
+
+            {/* Expanded breakdown */}
             <AnimatePresence>
                 {expanded && (
                     <motion.div
@@ -457,24 +496,24 @@ function LeaderboardRow({ item, idx, criteria, color }) {
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.25 }}
                         className={`overflow-hidden ${rowBg} border-t border-dashed border-gray-100`}>
-                        <div className="px-6 py-4">
+                        <div className="px-3 sm:px-6 py-3 sm:py-4">
                             <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
                                 Breakdown Nilai per Kriteria
                             </p>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                                 {criteria.map(c => {
                                     const score = item.score_per_criteria?.[c.name] ?? null;
                                     const pct   = score !== null ? (score / c.max_score) * 100 : 0;
                                     return (
                                         <div key={c.id}
-                                            className="bg-white rounded-2xl border border-gray-100
-                                                       shadow-sm p-3">
+                                            className="bg-white rounded-xl sm:rounded-2xl border
+                                                       border-gray-100 shadow-sm p-2.5 sm:p-3">
                                             <p className="text-[10px] font-bold text-gray-500
                                                           uppercase tracking-wide mb-1 truncate">
                                                 {c.name}
                                             </p>
-                                            <div className="flex items-end justify-between mb-2">
-                                                <span className={`text-xl font-black ${scoreColor}`}>
+                                            <div className="flex items-end justify-between mb-1.5 sm:mb-2">
+                                                <span className={`text-lg sm:text-xl font-black ${scoreColor}`}>
                                                     {score ?? '—'}
                                                 </span>
                                                 <span className="text-xs text-gray-400">

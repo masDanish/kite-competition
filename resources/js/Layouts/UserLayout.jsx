@@ -46,6 +46,12 @@ export default function UserLayout({ children, header }) {
         return () => clearTimeout(t);
     }, [flash?.success, flash?.error, flash?.info]);
 
+    // Lock body scroll when mobile menu open
+    useEffect(() => {
+        document.body.style.overflow = mobileOpen ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [mobileOpen]);
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans">
 
@@ -56,25 +62,25 @@ export default function UserLayout({ children, header }) {
                         ? '0 4px 24px rgba(0,0,0,0.08)'
                         : '0 1px 0 rgba(0,0,0,0.06)',
                 }}
-                className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                    <div className="flex h-16 items-center justify-between">
+                className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+                    <div className="flex h-14 sm:h-16 items-center justify-between gap-2">
 
                         {/* Logo */}
-                        <Link href="/" className="flex items-center gap-2.5 shrink-0">
-                            <img src={Logo} className="w-10 h-10 object-contain" />
-                            <div className="hidden sm:block leading-tight">
-                                <p className="font-black text-indigo-700 text-sm">
+                        <Link href="/" className="flex items-center gap-2 shrink-0 min-w-0">
+                            <img src={Logo} className="w-8 h-8 sm:w-10 sm:h-10 object-contain flex-shrink-0" />
+                            <div className="hidden xs:block sm:block leading-tight">
+                                <p className="font-black text-indigo-700 text-xs sm:text-sm whitespace-nowrap">
                                     Kite Competition
                                 </p>
-                                <p className="text-[10px] text-gray-400 font-medium">
+                                <p className="text-[9px] sm:text-[10px] text-gray-400 font-medium whitespace-nowrap">
                                     Design • Fly • Compete
                                 </p>
                             </div>
                         </Link>
 
                         {/* Desktop Nav */}
-                        <div className="hidden md:flex items-center gap-1">
+                        <div className="hidden md:flex items-center gap-0.5 lg:gap-1 flex-1 justify-center">
                             {navItems.map(item => {
                                 const active = route().current(item.href);
                                 return (
@@ -82,15 +88,16 @@ export default function UserLayout({ children, header }) {
                                         <motion.div
                                             whileHover={{ y: -1 }}
                                             whileTap={{ scale: 0.97 }}
-                                            className={`relative flex items-center gap-2 px-4 py-2
-                                                        rounded-xl text-sm font-semibold transition-all
+                                            className={`relative flex items-center gap-1.5 px-3 lg:px-4 py-2
+                                                        rounded-xl text-xs lg:text-sm font-semibold transition-all
                                                         duration-200
                                                 ${active
                                                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
                                                     : 'text-gray-600 hover:bg-gray-100 hover:text-indigo-600'
                                                 }`}>
-                                            <item.icon size={15} />
-                                            {item.label}
+                                            <item.icon size={14} />
+                                            <span className="hidden lg:inline">{item.label}</span>
+                                            <span className="lg:hidden">{item.label.split(' ')[0]}</span>
                                         </motion.div>
                                     </Link>
                                 );
@@ -98,7 +105,7 @@ export default function UserLayout({ children, header }) {
                         </div>
 
                         {/* Right: User dropdown + mobile toggle */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
                             {/* Desktop User Dropdown */}
                             <div ref={dropRef} className="relative hidden md:block">
@@ -106,15 +113,15 @@ export default function UserLayout({ children, header }) {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.97 }}
                                     onClick={() => setDropdown(!dropdownOpen)}
-                                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl
+                                    className="flex items-center gap-2 px-2 lg:px-3 py-2 rounded-xl
                                                hover:bg-gray-100 transition-colors">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br
+                                    <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br
                                                     from-indigo-500 to-blue-600 flex items-center
-                                                    justify-center text-white text-sm font-bold
-                                                    shadow-sm shadow-indigo-200">
+                                                    justify-center text-white text-xs font-bold
+                                                    shadow-sm shadow-indigo-200 flex-shrink-0">
                                         {user?.name?.charAt(0).toUpperCase()}
                                     </div>
-                                    <div className="text-left">
+                                    <div className="text-left hidden lg:block">
                                         <p className="text-sm font-semibold text-gray-800 leading-none">
                                             {user?.name?.split(' ')[0]}
                                         </p>
@@ -124,7 +131,8 @@ export default function UserLayout({ children, header }) {
                                     </div>
                                     <motion.div
                                         animate={{ rotate: dropdownOpen ? 180 : 0 }}
-                                        transition={{ duration: 0.2 }}>
+                                        transition={{ duration: 0.2 }}
+                                        className="hidden lg:block">
                                         <ChevronDown size={14} className="text-gray-400" />
                                     </motion.div>
                                 </motion.button>
@@ -138,9 +146,8 @@ export default function UserLayout({ children, header }) {
                                             transition={{ duration: 0.18 }}
                                             className="absolute right-0 mt-2 w-52 bg-white border
                                                        border-gray-100 rounded-2xl shadow-xl
-                                                       shadow-black/10 overflow-hidden">
+                                                       shadow-black/10 overflow-hidden z-50">
 
-                                            {/* User info */}
                                             <div className="px-4 py-3 bg-gradient-to-r from-indigo-50
                                                             to-blue-50 border-b border-gray-100">
                                                 <p className="text-sm font-bold text-gray-800">
@@ -205,47 +212,65 @@ export default function UserLayout({ children, header }) {
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
+                {/* Mobile Menu — full overlay */}
                 <AnimatePresence>
                     {mobileOpen && (
-                        <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.25 }}
-                            className="overflow-hidden border-t border-gray-100 bg-white md:hidden">
-                            <div className="px-4 py-4 space-y-1">
-                                {navItems.map(item => (
-                                    <Link key={item.href} href={route(item.href)}
-                                        onClick={() => setMobileOpen(false)}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl
-                                                    text-sm font-semibold transition-colors
-                                            ${route().current(item.href)
-                                                ? 'bg-indigo-600 text-white'
-                                                : 'text-gray-600 hover:bg-gray-100'}`}>
-                                        <item.icon size={16} />
-                                        {item.label}
-                                    </Link>
-                                ))}
+                        <>
+                            {/* Backdrop */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setMobileOpen(false)}
+                                className="fixed inset-0 top-14 bg-black/20 backdrop-blur-sm z-40 md:hidden" />
 
-                                <div className="pt-3 mt-3 border-t border-gray-100 space-y-1">
-                                    <div className="px-4 py-2">
-                                        <p className="text-sm font-bold text-gray-800">{user?.name}</p>
-                                        <p className="text-xs text-gray-500">{user?.email}</p>
+                            <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.25 }}
+                                className="relative overflow-hidden border-t border-gray-100 bg-white md:hidden z-50 shadow-xl">
+                                <div className="px-3 py-4 space-y-1">
+                                    {navItems.map(item => (
+                                        <Link key={item.href} href={route(item.href)}
+                                            onClick={() => setMobileOpen(false)}
+                                            className={`flex items-center gap-3 px-4 py-3 rounded-xl
+                                                        text-sm font-semibold transition-colors
+                                                ${route().current(item.href)
+                                                    ? 'bg-indigo-600 text-white'
+                                                    : 'text-gray-600 hover:bg-gray-100'}`}>
+                                            <item.icon size={16} />
+                                            {item.label}
+                                        </Link>
+                                    ))}
+
+                                    <div className="pt-3 mt-3 border-t border-gray-100 space-y-1">
+                                        <div className="px-4 py-2 flex items-center gap-3">
+                                            <div className="w-9 h-9 rounded-full bg-gradient-to-br
+                                                            from-indigo-500 to-blue-600 flex items-center
+                                                            justify-center text-white text-sm font-bold shrink-0">
+                                                {user?.name?.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-bold text-gray-800 truncate">{user?.name}</p>
+                                                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                                            </div>
+                                        </div>
+                                        <Link href={route('profile.edit')}
+                                            onClick={() => setMobileOpen(false)}
+                                            className="flex items-center gap-3 px-4 py-3 rounded-xl
+                                                       text-sm text-gray-600 hover:bg-gray-100">
+                                            <User size={16} /> Edit Profil
+                                        </Link>
+                                        <Link href={route('logout')} method="post" as="button"
+                                            className="flex items-center gap-3 w-full px-4 py-3
+                                                       rounded-xl text-sm text-red-600 hover:bg-red-50">
+                                            <LogOut size={16} /> Keluar
+                                        </Link>
                                     </div>
-                                    <Link href={route('profile.edit')}
-                                        className="flex items-center gap-3 px-4 py-3 rounded-xl
-                                                   text-sm text-gray-600 hover:bg-gray-100">
-                                        <User size={16} /> Edit Profil
-                                    </Link>
-                                    <Link href={route('logout')} method="post" as="button"
-                                        className="flex items-center gap-3 w-full px-4 py-3
-                                                   rounded-xl text-sm text-red-600 hover:bg-red-50">
-                                        <LogOut size={16} /> Keluar
-                                    </Link>
                                 </div>
-                            </div>
-                        </motion.div>
+                            </motion.div>
+                        </>
                     )}
                 </AnimatePresence>
             </motion.nav>
@@ -257,32 +282,32 @@ export default function UserLayout({ children, header }) {
                         initial={{ opacity: 0, y: -16 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -16 }}
-                        className="max-w-7xl mx-auto px-4 sm:px-6 mt-4">
+                        className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 mt-3 sm:mt-4">
                         {flash?.success && (
-                            <div className="flex items-center gap-3 p-3.5 bg-emerald-50 border
+                            <div className="flex items-start gap-3 p-3.5 bg-emerald-50 border
                                             border-emerald-200 text-emerald-800 rounded-2xl text-sm
                                             font-medium shadow-sm">
                                 <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center
-                                                justify-center text-white text-xs shrink-0">✓</div>
-                                {flash.success}
+                                                justify-center text-white text-xs shrink-0 mt-0.5">✓</div>
+                                <span>{flash.success}</span>
                             </div>
                         )}
                         {flash?.error && (
-                            <div className="flex items-center gap-3 p-3.5 bg-red-50 border
+                            <div className="flex items-start gap-3 p-3.5 bg-red-50 border
                                             border-red-200 text-red-800 rounded-2xl text-sm
                                             font-medium shadow-sm">
                                 <div className="w-5 h-5 bg-red-500 rounded-full flex items-center
-                                                justify-center text-white text-xs shrink-0">✕</div>
-                                {flash.error}
+                                                justify-center text-white text-xs shrink-0 mt-0.5">✕</div>
+                                <span>{flash.error}</span>
                             </div>
                         )}
                         {flash?.info && (
-                            <div className="flex items-center gap-3 p-3.5 bg-blue-50 border
+                            <div className="flex items-start gap-3 p-3.5 bg-blue-50 border
                                             border-blue-200 text-blue-800 rounded-2xl text-sm
                                             font-medium shadow-sm">
                                 <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center
-                                                justify-center text-white text-xs shrink-0">ℹ</div>
-                                {flash.info}
+                                                justify-center text-white text-xs shrink-0 mt-0.5">ℹ</div>
+                                <span>{flash.info}</span>
                             </div>
                         )}
                     </motion.div>
@@ -291,20 +316,20 @@ export default function UserLayout({ children, header }) {
 
             {/* ══ PAGE HEADER ══ */}
             {header && (
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 mt-4 sm:mt-6">
                     <motion.div
                         initial={{ opacity: 0, x: -12 }}
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-3">
-                        <div className="w-1 h-6 bg-gradient-to-b from-indigo-500 to-blue-600
-                                        rounded-full" />
-                        <h1 className="text-xl font-black text-gray-800">{header}</h1>
+                        <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-indigo-500 to-blue-600
+                                        rounded-full shrink-0" />
+                        <h1 className="text-lg sm:text-xl font-black text-gray-800">{header}</h1>
                     </motion.div>
                 </div>
             )}
 
             {/* ══ CONTENT ══ */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-12">
+            <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 pb-10 sm:pb-12">
                 <motion.div
                     key={header}
                     initial={{ opacity: 0, y: 12 }}

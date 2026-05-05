@@ -5,7 +5,7 @@ import Logo from '@/Assets/logo.png';
 import {
     LayoutDashboard, CalendarDays, Users, ClipboardList,
     Image, Megaphone, BarChart3, LogOut,
-    PanelLeftClose, PanelLeftOpen,
+    PanelLeftClose, PanelLeftOpen, Menu, X,
 } from "lucide-react";
 
 const navItems = [
@@ -20,10 +20,10 @@ const navItems = [
 
 export default function AdminLayout({ children, header }) {
     const { auth = { user: null }, flash = {} } = usePage().props;
-    const [collapsed, setCollapsed] = useState(false);
-    const [flashVisible, setFlash]  = useState(true);
-    const [currentTime, setTime]    = useState(new Date());
-    const [hoverNav, setHoverNav]   = useState(null);
+    const [collapsed, setCollapsed]   = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [flashVisible, setFlash]    = useState(true);
+    const [currentTime, setTime]      = useState(new Date());
 
     useEffect(() => {
         const t = setInterval(() => setTime(new Date()), 60000);
@@ -36,6 +36,8 @@ export default function AdminLayout({ children, header }) {
         return () => clearTimeout(t);
     }, [flash?.success, flash?.error]);
 
+    useEffect(() => { setMobileOpen(false); }, [header]);
+
     const greeting = () => {
         const h = currentTime.getHours();
         if (h < 12) return 'Selamat Pagi';
@@ -44,245 +46,180 @@ export default function AdminLayout({ children, header }) {
         return 'Selamat Malam';
     };
 
+    const SidebarContent = ({ isMobile = false }) => (
+        <div className="flex flex-col h-full">
+            <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-indigo-600/20 to-transparent pointer-events-none" />
+
+            {/* Logo */}
+            <div className={`relative z-10 flex items-center border-b border-slate-700/50 py-4 transition-all duration-300
+                ${(collapsed && !isMobile) ? 'px-3 justify-center' : 'px-4 gap-3'}`}>
+                <img
+                    src={Logo}
+                    style={{ width: (collapsed && !isMobile) ? 34 : 40 }}
+                    className="object-contain shrink-0 rounded-xl transition-all duration-300"
+                />
+                {(!collapsed || isMobile) && (
+                    <div className="leading-tight min-w-0">
+                        <p className="font-black text-white text-sm whitespace-nowrap">Kite Competition</p>
+                        <p className="text-indigo-400 text-[11px] font-medium">Admin Panel</p>
+                    </div>
+                )}
+                {isMobile && (
+                    <button onClick={() => setMobileOpen(false)} className="ml-auto text-slate-400 hover:text-white p-1">
+                        <X size={18} />
+                    </button>
+                )}
+            </div>
+
+            {/* Nav */}
+            <nav className="relative z-10 flex-1 py-3 space-y-0.5 px-2 overflow-y-auto overflow-x-hidden">
+                {navItems.map((item) => {
+                    const active = route().current(item.href);
+                    return (
+                        <div key={item.href} className="relative">
+                            <Link href={route(item.href)}>
+                                <div
+                                    className={`relative flex items-center rounded-xl transition-colors duration-150 cursor-pointer
+                                        ${(collapsed && !isMobile) ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-2.5'}
+                                        ${active ? 'bg-indigo-600 shadow-md shadow-indigo-900/30' : 'hover:bg-slate-800/80'}`}>
+
+                                    {/* Garis aktif — tinggi mengikuti container item */}
+                                    {active && (
+                                        <span className="absolute left-0 inset-y-0 w-[3px] bg-indigo-300 rounded-r-full" />
+                                    )}
+
+                                    <item.icon
+                                        size={18}
+                                        className={`shrink-0 transition-colors ${active ? 'text-white' : item.color}`}
+                                    />
+
+                                    {(!collapsed || isMobile) && (
+                                        <span className={`text-sm font-medium whitespace-nowrap transition-colors
+                                            ${active ? 'text-white' : 'text-slate-300'}`}>
+                                            {item.label}
+                                        </span>
+                                    )}
+                                </div>
+                            </Link>
+                        </div>
+                    );
+                })}
+            </nav>
+
+            {/* User info + Logout */}
+            <div className="relative z-10 border-t border-slate-700/50 p-3 space-y-2">
+                {(!collapsed || isMobile) && (
+                    <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-slate-800 border border-slate-700/50 mb-2">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                            {auth.user?.name?.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-white text-sm font-semibold truncate">{auth.user?.name}</p>
+                            <p className="text-slate-400 text-xs">Administrator</p>
+                        </div>
+                    </div>
+                )}
+
+                <Link href={route('logout')} method="post" as="button" className="w-full">
+                    <div className={`flex items-center rounded-xl py-2.5 text-slate-400 hover:text-red-400
+                                    hover:bg-red-500/10 transition-colors duration-150 cursor-pointer
+                                    ${(collapsed && !isMobile) ? 'justify-center px-0' : 'gap-3 px-3'}`}>
+                        <LogOut size={17} className="shrink-0" />
+                        {(!collapsed || isMobile) && (
+                            <span className="text-sm font-medium">Keluar</span>
+                        )}
+                    </div>
+                </Link>
+            </div>
+        </div>
+    );
+
     return (
         <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
 
-            {/* ══════════════════════════════════════
-                SIDEBAR WRAPPER — overflow visible
-                agar tombol collapse tidak terpotong
-            ══════════════════════════════════════ */}
-            <div className="relative shrink-0 flex" style={{ zIndex: 30 }}>
+            {/* ── DESKTOP SIDEBAR ── */}
+            <div className="relative shrink-0 hidden md:flex" style={{ zIndex: 30 }}>
                 <motion.aside
                     animate={{ width: collapsed ? 72 : 256 }}
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                    className="flex flex-col h-screen
-                               bg-slate-900 border-r border-slate-700/50 overflow-hidden">
-
-                    {/* Sidebar top glow */}
-                    <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b
-                                    from-indigo-600/20 to-transparent pointer-events-none" />
-
-                    {/* ── Logo ── */}
-                    <div className={`relative z-10 flex items-center border-b border-slate-700/50
-                                     py-4 transition-all duration-300
-                                     ${collapsed ? 'px-3 justify-center' : 'px-4 gap-3'}`}>
-                        <motion.img
-                            src={Logo}
-                            animate={{ width: collapsed ? 34 : 40 }}
-                            transition={{ duration: 0.3 }}
-                            className="object-contain shrink-0 rounded-xl"
-                        />
-                        <AnimatePresence>
-                            {!collapsed && (
-                                <motion.div
-                                    initial={{ opacity: 0, x: -8 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -8 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="leading-tight min-w-0">
-                                    <p className="font-black text-white text-sm whitespace-nowrap">
-                                        Kite Competition
-                                    </p>
-                                    <p className="text-indigo-400 text-[11px] font-medium">
-                                        Admin Panel
-                                    </p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-
-                    {/* ── Nav ── */}
-                    <nav className="relative z-10 flex-1 py-3 space-y-0.5 px-2
-                                    overflow-y-auto overflow-x-hidden">
-                        {navItems.map((item) => {
-                            const active = route().current(item.href);
-                            return (
-                                <div key={item.href} className="relative group/nav">
-                                    <Link href={route(item.href)}>
-                                        <motion.div
-                                            whileHover={{ x: collapsed ? 0 : 3 }}
-                                            whileTap={{ scale: 0.97 }}
-                                            onHoverStart={() => setHoverNav(item.href)}
-                                            onHoverEnd={() => setHoverNav(null)}
-                                            className={`relative flex items-center rounded-xl
-                                                transition-all duration-200 cursor-pointer
-                                                ${collapsed
-                                                    ? 'justify-center px-0 py-3'
-                                                    : 'gap-3 px-3 py-2.5'}
-                                                ${active
-                                                    ? 'bg-indigo-600 shadow-lg shadow-indigo-900/40'
-                                                    : 'hover:bg-slate-800/80'}`}>
-
-                                            {/* Active bar kiri */}
-                                            {active && (
-                                                <motion.div
-                                                    layoutId="adminActiveNav"
-                                                    className="absolute left-0 top-1/2 -translate-y-1/2
-                                                               w-1 h-6 bg-indigo-300 rounded-r-full"
-                                                />
-                                            )}
-
-                                            <item.icon
-                                                size={18}
-                                                className={`shrink-0 transition-colors
-                                                    ${active ? 'text-white' : item.color}`}
-                                            />
-
-                                            <AnimatePresence>
-                                                {!collapsed && (
-                                                    <motion.span
-                                                        initial={{ opacity: 0 }}
-                                                        animate={{ opacity: 1 }}
-                                                        exit={{ opacity: 0 }}
-                                                        transition={{ duration: 0.15 }}
-                                                        className={`text-sm font-medium whitespace-nowrap
-                                                            ${active ? 'text-white' : 'text-slate-300'}`}>
-                                                        {item.label}
-                                                    </motion.span>
-                                                )}
-                                            </AnimatePresence>
-                                        </motion.div>
-                                    </Link>
-                                </div>
-                            );
-                        })}
-                    </nav>
-
-                    {/* ── User info + Logout ── */}
-                    <div className="relative z-10 border-t border-slate-700/50 p-3 space-y-2">
-                        <AnimatePresence>
-                            {!collapsed && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="overflow-hidden">
-                                    <div className="flex items-center gap-3 px-2 py-2 rounded-xl
-                                                    bg-slate-800 border border-slate-700/50 mb-2">
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br
-                                                        from-indigo-500 to-blue-600 flex items-center
-                                                        justify-center text-white text-sm font-bold shrink-0">
-                                            {auth.user?.name?.charAt(0).toUpperCase()}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-white text-sm font-semibold truncate">
-                                                {auth.user?.name}
-                                            </p>
-                                            <p className="text-slate-400 text-xs">Administrator</p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <Link href={route('logout')} method="post" as="button" className="w-full">
-                            <motion.div
-                                whileHover={{ backgroundColor: 'rgba(239,68,68,0.12)' }}
-                                whileTap={{ scale: 0.96 }}
-                                className={`flex items-center rounded-xl py-2.5 text-slate-400
-                                            hover:text-red-400 transition-all duration-200 cursor-pointer
-                                            ${collapsed ? 'justify-center px-0' : 'gap-3 px-3'}`}>
-                                <LogOut size={17} className="shrink-0" />
-                                <AnimatePresence>
-                                    {!collapsed && (
-                                        <motion.span
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.15 }}
-                                            className="text-sm font-medium">
-                                            Keluar
-                                        </motion.span>
-                                    )}
-                                </AnimatePresence>
-                            </motion.div>
-                        </Link>
-                    </div>
+                    transition={{ duration: 0.25, ease: 'easeInOut' }}
+                    className="relative flex flex-col h-screen bg-slate-900 border-r border-slate-700/50 overflow-hidden">
+                    <SidebarContent />
                 </motion.aside>
 
-                {/* ══ TOMBOL COLLAPSE ══
-                    Diletakkan di LUAR aside (sibling),
-                    sehingga tidak terpotong overflow-hidden  */}
-                <motion.button
+                {/* Collapse toggle */}
+                <button
                     onClick={() => setCollapsed(!collapsed)}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
                     title={collapsed ? 'Buka sidebar' : 'Tutup sidebar'}
                     className="absolute right-0 top-[70px] translate-x-1/2 z-50
-                               w-8 h-8 rounded-full
-                               bg-slate-800 border-2 border-slate-600
-                               flex items-center justify-center shadow-xl shadow-black/30
-                               text-slate-300 hover:text-white
-                               hover:bg-indigo-600 hover:border-indigo-500
-                               transition-all duration-200">
-                    <AnimatePresence mode="wait">
-                        {collapsed ? (
-                            <motion.div key="open"
-                                initial={{ opacity: 0, scale: 0.6 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.6 }}
-                                transition={{ duration: 0.15 }}>
-                                <PanelLeftOpen size={14} />
-                            </motion.div>
-                        ) : (
-                            <motion.div key="close"
-                                initial={{ opacity: 0, scale: 0.6 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.6 }}
-                                transition={{ duration: 0.15 }}>
-                                <PanelLeftClose size={14} />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </motion.button>
+                               w-7 h-7 rounded-full bg-slate-800 border-2 border-slate-600
+                               flex items-center justify-center shadow-lg
+                               text-slate-300 hover:text-white hover:bg-indigo-600
+                               hover:border-indigo-500 transition-colors duration-150">
+                    {collapsed ? <PanelLeftOpen size={13} /> : <PanelLeftClose size={13} />}
+                </button>
             </div>
 
-            {/* ══════════════════════════════════════
-                MAIN CONTENT
-            ══════════════════════════════════════ */}
+            {/* ── MOBILE SIDEBAR DRAWER ── */}
+            <AnimatePresence>
+                {mobileOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            onClick={() => setMobileOpen(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+                        />
+                        <motion.aside
+                            initial={{ x: -280 }}
+                            animate={{ x: 0 }}
+                            exit={{ x: -280 }}
+                            transition={{ duration: 0.25, ease: 'easeInOut' }}
+                            className="fixed left-0 top-0 bottom-0 w-64 bg-slate-900 z-50 md:hidden overflow-hidden border-r border-slate-700/50">
+                            <SidebarContent isMobile />
+                        </motion.aside>
+                    </>
+                )}
+            </AnimatePresence>
+
+            {/* ── MAIN CONTENT ── */}
             <div className="flex-1 flex flex-col overflow-hidden min-w-0">
 
                 {/* Topbar */}
-                <header className="bg-white border-b border-gray-100 px-6 py-3.5
-                                   flex items-center justify-between shrink-0 shadow-sm">
-                    <div>
-                        <h1 className="text-base font-bold text-gray-800">{header}</h1>
-                        <p className="text-xs text-gray-400">
-                            {greeting()}, {auth.user?.name?.split(' ')[0]} 👋
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="hidden md:block text-right">
-                            <p className="text-xs font-semibold text-gray-700">
-                                {currentTime.toLocaleTimeString('id-ID', {
-                                    hour: '2-digit', minute: '2-digit'
-                                })}
-                            </p>
-                            <p className="text-[10px] text-gray-400">
-                                {currentTime.toLocaleDateString('id-ID', {
-                                    weekday: 'long', day: 'numeric', month: 'long'
-                                })}
+                <header className="bg-white border-b border-gray-100 px-4 md:px-6 py-3 md:py-3.5
+                                   flex items-center justify-between shrink-0 shadow-sm gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <button
+                            onClick={() => setMobileOpen(true)}
+                            className="md:hidden p-1.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors shrink-0">
+                            <Menu size={20} />
+                        </button>
+                        <div className="min-w-0">
+                            <h1 className="text-sm md:text-base font-bold text-gray-800 truncate">{header}</h1>
+                            <p className="text-xs text-gray-400 hidden sm:block">
+                                {greeting()}, {auth.user?.name?.split(' ')[0]} 👋
                             </p>
                         </div>
+                    </div>
 
-                        <div className="w-px h-8 bg-gray-100 hidden md:block" />
-
-                        <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br
-                                            from-indigo-500 to-blue-600 flex items-center
-                                            justify-center text-white text-sm font-bold
-                                            shadow-md shadow-indigo-200 shrink-0">
+                    <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                        <div className="hidden lg:block text-right">
+                            <p className="text-xs font-semibold text-gray-700">
+                                {currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                            <p className="text-[10px] text-gray-400">
+                                {currentTime.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}
+                            </p>
+                        </div>
+                        <div className="w-px h-8 bg-gray-100 hidden lg:block" />
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-indigo-200 shrink-0">
                                 {auth.user?.name?.charAt(0).toUpperCase()}
                             </div>
                             <div className="hidden md:block">
-                                <p className="text-sm font-semibold text-gray-800 leading-none">
-                                    {auth.user?.name}
-                                </p>
-                                <p className="text-[11px] text-indigo-500 font-medium mt-0.5">
-                                    Administrator
-                                </p>
+                                <p className="text-sm font-semibold text-gray-800 leading-none">{auth.user?.name}</p>
+                                <p className="text-[11px] text-indigo-500 font-medium mt-0.5">Administrator</p>
                             </div>
                         </div>
                     </div>
@@ -292,32 +229,26 @@ export default function AdminLayout({ children, header }) {
                 <AnimatePresence>
                     {flashVisible && flash?.success && (
                         <motion.div
-                            initial={{ opacity: 0, y: -16, height: 0 }}
-                            animate={{ opacity: 1, y: 0, height: 'auto' }}
-                            exit={{ opacity: 0, y: -16, height: 0 }}
-                            className="mx-6 mt-4 overflow-hidden">
-                            <div className="flex items-center gap-3 p-3.5 bg-emerald-50
-                                            border border-emerald-200 text-emerald-800
-                                            rounded-2xl text-sm font-medium shadow-sm">
-                                <div className="w-5 h-5 bg-emerald-500 rounded-full flex
-                                                items-center justify-center text-white
-                                                text-xs shrink-0 font-bold">✓</div>
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="mx-4 md:mx-6 mt-3 md:mt-4 overflow-hidden">
+                            <div className="flex items-center gap-3 p-3 md:p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-sm font-medium shadow-sm">
+                                <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs shrink-0 font-bold">✓</div>
                                 {flash.success}
                             </div>
                         </motion.div>
                     )}
                     {flashVisible && flash?.error && (
                         <motion.div
-                            initial={{ opacity: 0, y: -16, height: 0 }}
-                            animate={{ opacity: 1, y: 0, height: 'auto' }}
-                            exit={{ opacity: 0, y: -16, height: 0 }}
-                            className="mx-6 mt-4 overflow-hidden">
-                            <div className="flex items-center gap-3 p-3.5 bg-red-50
-                                            border border-red-200 text-red-800
-                                            rounded-2xl text-sm font-medium shadow-sm">
-                                <div className="w-5 h-5 bg-red-500 rounded-full flex
-                                                items-center justify-center text-white
-                                                text-xs shrink-0 font-bold">✕</div>
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="mx-4 md:mx-6 mt-3 md:mt-4 overflow-hidden">
+                            <div className="flex items-center gap-3 p-3 md:p-3.5 bg-red-50 border border-red-200 text-red-800 rounded-2xl text-sm font-medium shadow-sm">
+                                <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs shrink-0 font-bold">✕</div>
                                 {flash.error}
                             </div>
                         </motion.div>
@@ -325,14 +256,8 @@ export default function AdminLayout({ children, header }) {
                 </AnimatePresence>
 
                 {/* Content */}
-                <main className="flex-1 overflow-y-auto p-6 bg-slate-50">
-                    <motion.div
-                        key={header}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.35 }}>
-                        {children}
-                    </motion.div>
+                <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 bg-slate-50">
+                    {children}
                 </main>
             </div>
         </div>

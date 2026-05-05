@@ -9,8 +9,7 @@ import {
     ClipboardCheck, Hourglass, XCircle
 } from 'lucide-react';
 
-/* ── Partikel statis ── */
-const PARTICLES = Array.from({ length: 16 }, (_, i) => ({
+const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
     id: i,
     left:  `${(i * 337) % 100}%`,
     top:   `${(i * 271) % 100}%`,
@@ -20,7 +19,6 @@ const PARTICLES = Array.from({ length: 16 }, (_, i) => ({
     color: ['#818cf8','#60a5fa','#34d399','#fbbf24','#f472b6'][i % 5],
 }));
 
-/* ── 3D Tilt Card ── */
 function TiltCard({ children, className = '', intensity = 10 }) {
     const ref  = useRef(null);
     const rotX = useSpring(0, { stiffness: 250, damping: 28 });
@@ -47,7 +45,6 @@ const fadeUp  = {
     show:   { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22,1,0.36,1] } }
 };
 
-/* ── Status event ── */
 const STATUS_CFG = {
     open:     { label: 'Buka',        dot: '●', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200', pulse: true  },
     closed:   { label: 'Ditutup',     dot: '●', badge: 'bg-red-100 text-red-600 border-red-200',            pulse: false },
@@ -56,18 +53,17 @@ const STATUS_CFG = {
     draft:    { label: 'Draft',       dot: '●', badge: 'bg-yellow-100 text-yellow-700 border-yellow-200',   pulse: false },
 };
 
-/* ── Status registrasi user ── */
 const REG_CFG = {
     pending: {
         label:    'Menunggu Persetujuan',
-        sublabel: 'Pendaftaran sedang diproses admin',
+        sublabel: 'Sedang diproses admin',
         icon:     Hourglass,
         cls:      'bg-amber-50 text-amber-700 border-amber-200',
         iconCls:  'text-amber-500',
     },
     approved: {
         label:    'Sudah Terdaftar ✓',
-        sublabel: 'Pendaftaran disetujui — lihat dashboard',
+        sublabel: 'Disetujui — lihat dashboard',
         icon:     ClipboardCheck,
         cls:      'bg-emerald-50 text-emerald-700 border-emerald-200',
         iconCls:  'text-emerald-500',
@@ -81,12 +77,11 @@ const REG_CFG = {
     },
 };
 
-/* ── Tabs ── */
 const TABS = [
-    { key: 'all',      label: 'Semua Event',   icon: Eye          },
-    { key: 'open',     label: 'Sedang Buka',   icon: Play         },
-    { key: 'ongoing',  label: 'Berlangsung',   icon: CheckCircle2 },
-    { key: 'finished', label: 'Sudah Selesai', icon: Lock         },
+    { key: 'all',      label: 'Semua',      labelFull: 'Semua Event',   icon: Eye          },
+    { key: 'open',     label: 'Buka',       labelFull: 'Sedang Buka',   icon: Play         },
+    { key: 'ongoing',  label: 'Ongoing',    labelFull: 'Berlangsung',   icon: CheckCircle2 },
+    { key: 'finished', label: 'Selesai',    labelFull: 'Sudah Selesai', icon: Lock         },
 ];
 
 export default function EventsIndex({ events, filters, myRegistrations = {} }) {
@@ -122,9 +117,9 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7 }}
-                className="relative overflow-hidden rounded-3xl mb-8
+                className="relative overflow-hidden rounded-2xl sm:rounded-3xl mb-5 sm:mb-8
                            bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950
-                           p-7 text-white shadow-2xl shadow-indigo-950/40">
+                           p-5 sm:p-7 text-white shadow-2xl shadow-indigo-950/40">
 
                 <div className="absolute inset-0 opacity-[0.08]"
                     style={{
@@ -132,12 +127,12 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
                                           linear-gradient(90deg,rgba(99,102,241,0.5) 1px,transparent 1px)`,
                         backgroundSize: '40px 40px'
                     }} />
-                <motion.div className="absolute w-64 h-64 rounded-full pointer-events-none"
+                <motion.div className="absolute w-48 sm:w-64 h-48 sm:h-64 rounded-full pointer-events-none"
                     style={{ background: 'radial-gradient(circle,#6366f1,transparent 70%)',
                              top: '-20%', right: '-5%', opacity: 0.2 }}
                     animate={{ scale: [1,1.4,1] }}
                     transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }} />
-                <motion.div className="absolute w-48 h-48 rounded-full pointer-events-none"
+                <motion.div className="absolute w-32 sm:w-48 h-32 sm:h-48 rounded-full pointer-events-none"
                     style={{ background: 'radial-gradient(circle,#06b6d4,transparent 70%)',
                              bottom: '-15%', left: '5%', opacity: 0.15 }}
                     animate={{ scale: [1.2,1,1.2] }}
@@ -151,9 +146,8 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
                         transition={{ duration: p.dur, repeat: Infinity, delay: p.delay }} />
                 ))}
 
-                <div className="relative z-10 flex flex-col sm:flex-row justify-between
-                                items-start sm:items-center gap-5">
-                    <div>
+                <div className="relative z-10 flex justify-between items-start gap-4 sm:gap-5">
+                    <div className="flex-1 min-w-0">
                         <motion.div initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }}
                             transition={{ delay: 0.2 }}
                             className="inline-flex items-center gap-2 bg-indigo-500/20
@@ -164,20 +158,20 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
                         </motion.div>
                         <motion.h1 initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }}
                             transition={{ delay: 0.3 }}
-                            className="text-2xl font-black text-white tracking-tight">
+                            className="text-xl sm:text-2xl font-black text-white tracking-tight">
                             Event Lomba Layangan 🪁
                         </motion.h1>
                         <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }}
                             transition={{ delay: 0.4 }}
-                            className="text-slate-300 text-sm mt-1">
-                            {events.data.length} event tersedia — aktif, berlangsung, maupun yang telah selesai
+                            className="text-slate-300 text-xs sm:text-sm mt-1">
+                            {events.data.length} event tersedia
                         </motion.p>
                     </div>
                     <motion.div
                         animate={{ rotate:[0,8,-4,0], y:[0,-10,0] }}
                         transition={{ duration:5, repeat:Infinity, ease:'easeInOut' }}
                         className="hidden sm:block shrink-0">
-                        <svg width="72" height="88" viewBox="0 0 100 120" fill="none">
+                        <svg width="64" height="78" viewBox="0 0 100 120" fill="none">
                             <defs>
                                 <linearGradient id="kg-ev" x1="0" y1="0" x2="1" y2="1">
                                     <stop offset="0%" stopColor="#818cf8"/>
@@ -207,14 +201,14 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
             {/* ══ SEARCH + TABS ══ */}
             <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
                 transition={{ duration:0.5, delay:0.15 }}
-                className="space-y-4 mb-8">
+                className="space-y-3 sm:space-y-4 mb-5 sm:mb-8">
 
-                <form onSubmit={doSearch} className="flex gap-3">
+                <form onSubmit={doSearch} className="flex gap-2 sm:gap-3">
                     <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2
+                        <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2
                                            w-4 h-4 text-gray-400 pointer-events-none" />
                         <input
-                            className="w-full border border-gray-200 rounded-2xl pl-10 pr-4 py-3
+                            className="w-full border border-gray-200 rounded-2xl pl-9 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3
                                        text-sm bg-white shadow-sm focus:outline-none
                                        focus:ring-2 focus:ring-indigo-400 focus:border-transparent
                                        transition placeholder:text-gray-400"
@@ -225,28 +219,32 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
                     <motion.button type="submit"
                         whileHover={{ y:-2, scale:1.02 }} whileTap={{ scale:0.97 }}
                         className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white
-                                   px-6 py-3 rounded-2xl text-sm font-bold shadow-lg
+                                   px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-sm font-bold shadow-lg
                                    shadow-indigo-200 hover:shadow-indigo-300 transition-all
-                                   duration-300 flex items-center gap-2">
-                        <Search className="w-4 h-4" /> Cari
+                                   duration-300 flex items-center gap-2 whitespace-nowrap">
+                        <Search className="w-4 h-4" />
+                        <span className="hidden sm:inline">Cari</span>
                     </motion.button>
                 </form>
 
-                <div className="flex flex-wrap gap-2">
+                {/* Tabs — scrollable on mobile */}
+                <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
                     {TABS.map(tab => {
                         const isActive = activeTab === tab.key;
                         return (
                             <motion.button key={tab.key}
                                 onClick={() => setTab(tab.key)}
-                                whileHover={{ y: -2 }} whileTap={{ scale: 0.96 }}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-2xl
-                                            text-sm font-semibold border-2 transition-all duration-200
+                                whileTap={{ scale: 0.96 }}
+                                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-2xl
+                                            text-xs sm:text-sm font-semibold border-2 transition-all duration-200
+                                            whitespace-nowrap shrink-0
                                             ${isActive
                                                 ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white border-transparent shadow-lg shadow-indigo-200'
                                                 : 'bg-white border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-600'}`}>
                                 <tab.icon className="w-3.5 h-3.5" />
-                                {tab.label}
-                                <span className={`text-xs px-2 py-0.5 rounded-full font-black
+                                <span className="sm:hidden">{tab.label}</span>
+                                <span className="hidden sm:inline">{tab.labelFull}</span>
+                                <span className={`text-xs px-1.5 py-0.5 rounded-full font-black
                                                   ${isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'}`}>
                                     {counts[tab.key]}
                                 </span>
@@ -263,13 +261,13 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
                         initial={{ opacity:0, scale:0.95 }}
                         animate={{ opacity:1, scale:1 }}
                         exit={{ opacity:0 }}
-                        className="flex flex-col items-center justify-center py-24
+                        className="flex flex-col items-center justify-center py-16 sm:py-24
                                    bg-white rounded-3xl border-2 border-dashed border-gray-200">
                         <motion.div animate={{ y:[0,-12,0], rotate:[0,5,-3,0] }}
                             transition={{ duration:5, repeat:Infinity }}
-                            className="text-7xl mb-4">🪁</motion.div>
-                        <p className="text-gray-500 font-semibold mb-1">Tidak ada event ditemukan</p>
-                        <p className="text-gray-400 text-sm">Coba tab lain atau ubah kata pencarian</p>
+                            className="text-6xl sm:text-7xl mb-4">🪁</motion.div>
+                        <p className="text-gray-500 font-semibold mb-1 text-sm sm:text-base">Tidak ada event ditemukan</p>
+                        <p className="text-gray-400 text-xs sm:text-sm">Coba tab lain atau ubah kata pencarian</p>
                         {activeTab !== 'all' && (
                             <button onClick={() => setTab('all')}
                                 className="mt-4 text-indigo-600 text-sm font-semibold hover:underline">
@@ -280,7 +278,7 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
                 ) : (
                     <motion.div key={activeTab}
                         initial="hidden" animate="show" variants={stagger}
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
                         {filtered.map(event => (
                             <motion.div key={event.id} variants={fadeUp}>
                                 <EventCard
@@ -297,23 +295,27 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
             {(events.prev_page_url || events.next_page_url) && (
                 <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }}
                     transition={{ delay:0.4 }}
-                    className="flex justify-center gap-3 mt-10">
+                    className="flex justify-center gap-3 mt-8 sm:mt-10">
                     {events.prev_page_url && (
                         <Link href={events.prev_page_url}
-                            className="flex items-center gap-2 px-5 py-2.5 border border-gray-200
+                            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 border border-gray-200
                                        rounded-2xl text-sm font-semibold text-gray-600 bg-white
                                        shadow-sm hover:border-indigo-300 hover:text-indigo-600
                                        hover:-translate-y-0.5 transition-all duration-200">
-                            <ChevronLeft className="w-4 h-4"/> Sebelumnya
+                            <ChevronLeft className="w-4 h-4"/>
+                            <span className="hidden sm:inline">Sebelumnya</span>
+                            <span className="sm:hidden">Prev</span>
                         </Link>
                     )}
                     {events.next_page_url && (
                         <Link href={events.next_page_url}
-                            className="flex items-center gap-2 px-5 py-2.5 border border-gray-200
+                            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 border border-gray-200
                                        rounded-2xl text-sm font-semibold text-gray-600 bg-white
                                        shadow-sm hover:border-indigo-300 hover:text-indigo-600
                                        hover:-translate-y-0.5 transition-all duration-200">
-                            Selanjutnya <ChevronRight className="w-4 h-4"/>
+                            <span className="hidden sm:inline">Selanjutnya</span>
+                            <span className="sm:hidden">Next</span>
+                            <ChevronRight className="w-4 h-4"/>
                         </Link>
                     )}
                 </motion.div>
@@ -322,10 +324,6 @@ export default function EventsIndex({ events, filters, myRegistrations = {} }) {
     );
 }
 
-/* ══════════════════════════════════════════════
-   EVENT CARD
-   regStatus: 'pending' | 'approved' | 'rejected' | null
-══════════════════════════════════════════════ */
 function EventCard({ event, regStatus }) {
     const [hovered, setHovered] = useState(false);
 
@@ -346,9 +344,9 @@ function EventCard({ event, regStatus }) {
             <motion.div
                 onHoverStart={() => setHovered(true)}
                 onHoverEnd={() => setHovered(false)}
-                whileHover={{ y: -6 }}
+                whileHover={{ y: -4 }}
                 transition={{ duration:0.25, ease:[0.22,1,0.36,1] }}
-                className={`bg-white rounded-3xl shadow-sm border overflow-hidden
+                className={`bg-white rounded-2xl sm:rounded-3xl shadow-sm border overflow-hidden
                             flex flex-col h-full transition-all duration-300
                             ${isFinished
                                 ? 'border-gray-200 hover:border-gray-300 hover:shadow-md opacity-80'
@@ -356,7 +354,7 @@ function EventCard({ event, regStatus }) {
                                     ? 'border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/60 hover:border-indigo-300'
                                     : 'border-gray-100 hover:shadow-xl hover:shadow-indigo-100/50 hover:border-indigo-200'}`}>
 
-                {/* ── Gambar / Placeholder ── */}
+                {/* Image */}
                 <div className="relative overflow-hidden">
                     {event.poster ? (
                         <>
@@ -365,19 +363,19 @@ function EventCard({ event, regStatus }) {
                                 alt={event.title}
                                 animate={{ scale: hovered ? 1.06 : 1 }}
                                 transition={{ duration:0.4 }}
-                                className={`w-full h-44 object-cover
+                                className={`w-full h-36 sm:h-44 object-cover
                                             ${isFinished ? 'grayscale-[30%]' : ''}`} />
                             <div className={`absolute inset-0 bg-gradient-to-t
                                             ${isFinished ? 'from-gray-900/60 to-transparent'
                                                          : 'from-black/30 to-transparent'}`} />
                         </>
                     ) : (
-                        <div className={`relative w-full h-44 flex items-center justify-center
+                        <div className={`relative w-full h-36 sm:h-44 flex items-center justify-center
                                          overflow-hidden
                                          ${isFinished
                                              ? 'bg-gradient-to-br from-gray-800 to-gray-900'
                                              : 'bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950'}`}>
-                            {[...Array(8)].map((_,i) => (
+                            {[...Array(6)].map((_,i) => (
                                 <motion.div key={i} className="absolute rounded-full"
                                     style={{
                                         width:3, height:3,
@@ -391,7 +389,7 @@ function EventCard({ event, regStatus }) {
                             ))}
                             <motion.div animate={{ rotate:[0,8,-4,0] }}
                                 transition={{ duration:5, repeat:Infinity }}>
-                                <svg width="56" height="68" viewBox="0 0 100 120" fill="none">
+                                <svg width="48" height="58" viewBox="0 0 100 120" fill="none">
                                     <defs>
                                         <linearGradient id={`kg-c-${event.id}`} x1="0" y1="0" x2="1" y2="1">
                                             <stop offset="0%" stopColor={isFinished ? '#9ca3af' : '#818cf8'}/>
@@ -412,25 +410,25 @@ function EventCard({ event, regStatus }) {
                         </div>
                     )}
 
-                    {/* Badge status event */}
-                    <div className="absolute top-3 left-3">
+                    {/* Status badge */}
+                    <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
                         <motion.span
                             animate={statusCfg.pulse ? { scale:[1,1.06,1] } : {}}
                             transition={{ duration:2, repeat:Infinity }}
-                            className={`text-xs px-2.5 py-1 rounded-full font-bold border
+                            className={`text-[10px] sm:text-xs px-2 sm:px-2.5 py-1 rounded-full font-bold border
                                         backdrop-blur-sm ${statusCfg.badge}`}>
                             {statusCfg.dot} {statusCfg.label}
                         </motion.span>
                     </div>
 
-                    {/* Badge "Sudah Daftar" di pojok kanan atas */}
+                    {/* Registration badge */}
                     {hasReg && (
                         <motion.div
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                            className="absolute top-3 right-3">
-                            <span className={`text-xs px-2.5 py-1 rounded-full font-bold border
+                            className="absolute top-2 right-2 sm:top-3 sm:right-3">
+                            <span className={`text-[10px] sm:text-xs px-2 sm:px-2.5 py-1 rounded-full font-bold border
                                              backdrop-blur-sm
                                              ${regStatus === 'approved'
                                                  ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg shadow-emerald-500/30'
@@ -444,13 +442,12 @@ function EventCard({ event, regStatus }) {
                         </motion.div>
                     )}
 
-                    {/* Overlay event selesai */}
                     {isFinished && (
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="bg-black/40 backdrop-blur-[2px] rounded-2xl
-                                            px-4 py-2 flex items-center gap-2">
-                                <Lock className="w-4 h-4 text-gray-300" />
-                                <span className="text-white text-xs font-bold">
+                            <div className="bg-black/40 backdrop-blur-[2px] rounded-xl sm:rounded-2xl
+                                            px-3 sm:px-4 py-2 flex items-center gap-2">
+                                <Lock className="w-3.5 h-3.5 text-gray-300" />
+                                <span className="text-white text-[10px] sm:text-xs font-bold">
                                     Event Telah Selesai
                                 </span>
                             </div>
@@ -458,7 +455,6 @@ function EventCard({ event, regStatus }) {
                     )}
                 </div>
 
-                {/* Accent bar */}
                 <AnimatePresence>
                     {hovered && !isFinished && (
                         <motion.div
@@ -472,7 +468,7 @@ function EventCard({ event, regStatus }) {
                     )}
                 </AnimatePresence>
 
-                <div className="p-5 flex flex-col flex-1">
+                <div className="p-4 sm:p-5 flex flex-col flex-1">
                     <h3 className="font-bold text-gray-800 leading-tight text-sm line-clamp-2 mb-2">
                         {event.title}
                     </h3>
@@ -490,9 +486,9 @@ function EventCard({ event, regStatus }) {
 
                     {event.categories?.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-3">
-                            {event.categories.slice(0, 3).map(cat => (
+                            {event.categories.slice(0, 2).map(cat => (
                                 <span key={cat.id}
-                                    className={`flex items-center gap-1 text-xs px-2 py-0.5
+                                    className={`flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5
                                                 rounded-full font-medium border
                                                 ${isFinished
                                                     ? 'bg-gray-50 text-gray-400 border-gray-200'
@@ -500,27 +496,26 @@ function EventCard({ event, regStatus }) {
                                     <Tag className="w-2.5 h-2.5"/> {cat.name}
                                 </span>
                             ))}
-                            {event.categories.length > 3 && (
+                            {event.categories.length > 2 && (
                                 <span className="text-xs text-gray-400 self-center">
-                                    +{event.categories.length - 3}
+                                    +{event.categories.length - 2}
                                 </span>
                             )}
                         </div>
                     )}
 
-                    {/* Countdown / status info */}
                     {isOpen && !hasReg && daysLeft > 0 && (
                         <motion.p animate={{ opacity:[1,0.6,1] }}
                             transition={{ duration:2, repeat:Infinity }}
                             className="flex items-center gap-1 text-xs text-amber-500 mb-3 font-medium">
                             <Clock className="w-3 h-3 shrink-0"/>
-                            Pendaftaran tutup dalam {daysLeft} hari
+                            Tutup dalam {daysLeft} hari
                         </motion.p>
                     )}
                     {isOpen && !hasReg && daysLeft <= 0 && (
                         <p className="flex items-center gap-1 text-xs text-red-400 mb-3 font-medium">
                             <AlertCircle className="w-3 h-3 shrink-0"/>
-                            Pendaftaran sudah berakhir
+                            Pendaftaran berakhir
                         </p>
                     )}
                     {isOngoing && !hasReg && (
@@ -528,53 +523,46 @@ function EventCard({ event, regStatus }) {
                             transition={{ duration:1.5, repeat:Infinity }}
                             className="flex items-center gap-1 text-xs text-blue-500 mb-3 font-medium">
                             <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"/>
-                            Event sedang berlangsung
+                            Sedang berlangsung
                         </motion.p>
                     )}
 
                     <div className="flex-1" />
 
-                    {/* ════════════════════════════════════
-                        TOMBOL — berubah sesuai status
-                    ════════════════════════════════════ */}
-
-                    {/* Sudah mendaftar (pending/approved/rejected) */}
                     {hasReg && regCfg && (
                         <motion.div
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             className="mt-2 space-y-2">
-                            <div className={`flex items-start gap-3 px-4 py-3 rounded-2xl
+                            <div className={`flex items-start gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl
                                             border ${regCfg.cls}`}>
                                 <regCfg.icon className={`w-4 h-4 shrink-0 mt-0.5 ${regCfg.iconCls}`} />
                                 <div>
-                                    <p className="text-sm font-bold leading-tight">
+                                    <p className="text-xs sm:text-sm font-bold leading-tight">
                                         {regCfg.label}
                                     </p>
-                                    <p className="text-xs opacity-75 mt-0.5">
+                                    <p className="text-[10px] sm:text-xs opacity-75 mt-0.5">
                                         {regCfg.sublabel}
                                     </p>
                                 </div>
                             </div>
-                            {/* Link ke dashboard */}
                             <Link href={route('user.registrations.index')}
-                                className="flex items-center justify-center gap-2 py-2.5
-                                           rounded-2xl text-xs font-bold border-2 border-indigo-200
+                                className="flex items-center justify-center gap-2 py-2 sm:py-2.5
+                                           rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-bold border-2 border-indigo-200
                                            text-indigo-600 bg-white hover:bg-indigo-50
                                            hover:border-indigo-300 transition-all duration-200">
                                 <ClipboardCheck className="w-3.5 h-3.5"/>
-                                Lihat Status Pendaftaran
+                                Lihat Status
                                 <ArrowRight className="w-3.5 h-3.5"/>
                             </Link>
                         </motion.div>
                     )}
 
-                    {/* Belum mendaftar + open */}
                     {!hasReg && isOpen && daysLeft > 0 && (
                         <motion.div whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}>
                             <Link href={route('user.registrations.create', event.id)}
                                 className="relative flex items-center justify-center gap-2 mt-2
-                                           py-2.5 rounded-2xl text-sm font-bold overflow-hidden
+                                           py-2.5 rounded-xl sm:rounded-2xl text-sm font-bold overflow-hidden
                                            bg-gradient-to-br from-indigo-600 to-blue-600 text-white
                                            shadow-md shadow-indigo-200 hover:-translate-y-0.5
                                            hover:shadow-lg hover:shadow-indigo-300 transition-all
@@ -589,39 +577,36 @@ function EventCard({ event, regStatus }) {
                         </motion.div>
                     )}
 
-                    {/* Belum mendaftar + ongoing */}
                     {!hasReg && isOngoing && (
-                        <div className="mt-2 py-2.5 rounded-2xl text-sm font-bold text-center
+                        <div className="mt-2 py-2.5 rounded-xl sm:rounded-2xl text-sm font-bold text-center
                                         bg-blue-50 text-blue-600 border border-blue-200">
                             🏃 Sedang Berlangsung
                         </div>
                     )}
 
-                    {/* Belum mendaftar + finished */}
                     {!hasReg && isFinished && (
                         <div className="mt-2 space-y-2">
-                            <div className="py-2.5 rounded-2xl text-sm font-bold text-center
+                            <div className="py-2.5 rounded-xl sm:rounded-2xl text-sm font-bold text-center
                                             bg-gray-100 text-gray-500 flex items-center
                                             justify-center gap-2">
                                 <CheckCircle2 className="w-4 h-4 text-gray-400"/>
-                                Event Telah Berakhir
+                                Event Berakhir
                             </div>
                             {event.status === 'finished' && (
                                 <Link href={route('user.results.index')}
                                     className="flex items-center justify-center gap-2 py-2
-                                               rounded-2xl text-xs font-semibold text-indigo-600
+                                               rounded-xl sm:rounded-2xl text-xs font-semibold text-indigo-600
                                                bg-indigo-50 border border-indigo-100
                                                hover:bg-indigo-100 transition-colors duration-200">
                                     <Eye className="w-3.5 h-3.5"/>
-                                    Lihat Hasil Penilaian
+                                    Lihat Hasil
                                 </Link>
                             )}
                         </div>
                     )}
 
-                    {/* Status closed */}
                     {!hasReg && event.status === 'closed' && (
-                        <div className="mt-2 py-2.5 rounded-2xl text-sm font-bold text-center
+                        <div className="mt-2 py-2.5 rounded-xl sm:rounded-2xl text-sm font-bold text-center
                                         bg-red-50 text-red-500 border border-red-100">
                             🔒 Pendaftaran Ditutup
                         </div>

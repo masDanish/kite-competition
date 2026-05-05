@@ -29,13 +29,13 @@ function SectionCard({ icon: Icon, iconBg, iconColor, title, children, delay = 0
             animate="show"
             transition={{ delay }}
             className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100">
+            <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-gray-100">
                 <div className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center shrink-0`}>
                     <Icon className={`w-4 h-4 ${iconColor}`} />
                 </div>
-                <h2 className="font-bold text-gray-800">{title}</h2>
+                <h2 className="font-bold text-gray-800 text-sm sm:text-base">{title}</h2>
             </div>
-            <div className="p-6">{children}</div>
+            <div className="p-4 sm:p-6">{children}</div>
         </motion.div>
     );
 }
@@ -89,35 +89,35 @@ export default function EventCreate() {
                 initial={{ opacity: 0, y: -16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="relative overflow-hidden rounded-3xl bg-gradient-to-br
-                           from-slate-800 via-indigo-900 to-blue-900 p-6 mb-8 text-white">
+                className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br
+                           from-slate-800 via-indigo-900 to-blue-900 p-4 sm:p-6 mb-6 sm:mb-8 text-white">
                 <div className="absolute inset-0">
-                    <div className="absolute top-0 right-0 w-72 h-72 bg-white/5
+                    <div className="absolute top-0 right-0 w-48 sm:w-72 h-48 sm:h-72 bg-white/5
                                     rounded-full translate-x-1/3 -translate-y-1/3" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/10
+                    <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 bg-indigo-400/10
                                     rounded-full -translate-x-1/4 translate-y-1/4" />
                 </div>
-                <div className="relative z-10 flex justify-between items-center">
-                    <div>
+                <div className="relative z-10 flex justify-between items-center gap-3">
+                    <div className="min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                            <ClipboardList className="w-4 h-4 text-indigo-300" />
-                            <span className="text-indigo-300 text-sm font-medium">Panel Administrator</span>
+                            <ClipboardList className="w-4 h-4 text-indigo-300 shrink-0" />
+                            <span className="text-indigo-300 text-xs sm:text-sm font-medium">Panel Administrator</span>
                         </div>
-                        <h1 className="text-2xl font-black">Buat Event Baru ✨</h1>
-                        <p className="text-slate-300 text-sm mt-1">
+                        <h1 className="text-xl sm:text-2xl font-black">Buat Event Baru ✨</h1>
+                        <p className="text-slate-300 text-xs sm:text-sm mt-1">
                             Isi semua informasi yang dibutuhkan untuk membuat event baru.
                         </p>
                     </div>
                     <motion.div
                         animate={{ rotate: [0, 8, -4, 0], y: [0, -6, 0] }}
                         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="text-5xl hidden md:block">
+                        className="text-4xl sm:text-5xl hidden sm:block shrink-0">
                         🎯
                     </motion.div>
                 </div>
             </motion.div>
 
-            <form onSubmit={submit} className="max-w-4xl space-y-6">
+            <form onSubmit={submit} className="w-full max-w-4xl space-y-4 sm:space-y-6">
 
                 {/* ── Informasi Event ── */}
                 <SectionCard icon={FileText} iconBg="bg-indigo-100" iconColor="text-indigo-600"
@@ -143,6 +143,7 @@ export default function EventCreate() {
                                 onChange={e => setData('rules', e.target.value)}
                                 placeholder="Peraturan dan syarat keikutsertaan..." />
                         </div>
+                        {/* Lokasi + Maks Peserta: stack on mobile, side-by-side on sm+ */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className={labelClass}>
@@ -181,8 +182,8 @@ export default function EventCreate() {
                                                 transition-colors">
                                     <Upload className="w-4 h-4 text-indigo-600" />
                                 </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-gray-600">
+                                <div className="min-w-0">
+                                    <p className="text-sm font-semibold text-gray-600 truncate">
                                         {data.poster ? data.poster.name : 'Pilih file gambar'}
                                     </p>
                                     <p className="text-xs text-gray-400">PNG, JPG, WEBP maks. 2MB</p>
@@ -197,7 +198,8 @@ export default function EventCreate() {
                 {/* ── Periode ── */}
                 <SectionCard icon={CalendarDays} iconBg="bg-emerald-100" iconColor="text-emerald-600"
                     title="Periode Event" delay={0.15}>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* 2 col on mobile, 2 col on sm (effectively same), keep clean */}
+                    <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-4">
                         {[
                             { label: 'Mulai Pendaftaran *', key: 'registration_start' },
                             { label: 'Tutup Pendaftaran *', key: 'registration_end'   },
@@ -228,11 +230,11 @@ export default function EventCreate() {
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ duration: 0.25 }}
                                     className="relative border border-gray-100 rounded-2xl
-                                               p-4 bg-gray-50/60">
-                                    <div className="flex items-center justify-between mb-3">
+                                               p-3 sm:p-4 bg-gray-50/60">
+                                    <div className="flex items-center justify-between mb-3 gap-2">
                                         <span className="flex items-center gap-2 text-xs font-bold
                                                          text-violet-600 bg-violet-50 px-2.5 py-1
-                                                         rounded-full border border-violet-100">
+                                                         rounded-full border border-violet-100 shrink-0">
                                             <Tag className="w-3 h-3" />
                                             Kategori {i + 1}
                                         </span>
@@ -241,7 +243,7 @@ export default function EventCreate() {
                                                 className="flex items-center gap-1 text-xs font-bold
                                                            text-red-500 bg-red-50 px-2.5 py-1
                                                            rounded-full border border-red-100
-                                                           hover:bg-red-100 transition-colors">
+                                                           hover:bg-red-100 transition-colors shrink-0">
                                                 <Trash2 className="w-3 h-3" /> Hapus
                                             </button>
                                         )}
@@ -294,11 +296,11 @@ export default function EventCreate() {
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ duration: 0.25 }}
                                     className="relative border border-gray-100 rounded-2xl
-                                               p-4 bg-gray-50/60">
-                                    <div className="flex items-center justify-between mb-3">
+                                               p-3 sm:p-4 bg-gray-50/60">
+                                    <div className="flex items-center justify-between mb-3 gap-2">
                                         <span className="flex items-center gap-2 text-xs font-bold
                                                          text-amber-600 bg-amber-50 px-2.5 py-1
-                                                         rounded-full border border-amber-100">
+                                                         rounded-full border border-amber-100 shrink-0">
                                             <Star className="w-3 h-3" />
                                             Kriteria {i + 1}
                                         </span>
@@ -307,29 +309,32 @@ export default function EventCreate() {
                                                 className="flex items-center gap-1 text-xs font-bold
                                                            text-red-500 bg-red-50 px-2.5 py-1
                                                            rounded-full border border-red-100
-                                                           hover:bg-red-100 transition-colors">
+                                                           hover:bg-red-100 transition-colors shrink-0">
                                                 <Trash2 className="w-3 h-3" /> Hapus
                                             </button>
                                         )}
                                     </div>
+                                    {/* On mobile: 1 col; sm: nama full + nilai & bobot side by side */}
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                        <div>
+                                        <div className="sm:col-span-1">
                                             <label className={labelClass}>Nama Kriteria *</label>
                                             <input className={inputClass} value={crit.name}
                                                 onChange={e => updateCriteria(i, 'name', e.target.value)}
                                                 placeholder="Kreativitas, Teknik..." />
                                         </div>
-                                        <div>
-                                            <label className={labelClass}>Nilai Maks.</label>
-                                            <input type="number" className={inputClass}
-                                                value={crit.max_score} min="1" max="100"
-                                                onChange={e => updateCriteria(i, 'max_score', e.target.value)} />
-                                        </div>
-                                        <div>
-                                            <label className={labelClass}>Bobot (×)</label>
-                                            <input type="number" className={inputClass}
-                                                value={crit.weight} min="0.1" step="0.1"
-                                                onChange={e => updateCriteria(i, 'weight', e.target.value)} />
+                                        <div className="grid grid-cols-2 sm:contents gap-3">
+                                            <div>
+                                                <label className={labelClass}>Nilai Maks.</label>
+                                                <input type="number" className={inputClass}
+                                                    value={crit.max_score} min="1" max="100"
+                                                    onChange={e => updateCriteria(i, 'max_score', e.target.value)} />
+                                            </div>
+                                            <div>
+                                                <label className={labelClass}>Bobot (×)</label>
+                                                <input type="number" className={inputClass}
+                                                    value={crit.weight} min="0.1" step="0.1"
+                                                    onChange={e => updateCriteria(i, 'weight', e.target.value)} />
+                                            </div>
                                         </div>
                                         <div className="col-span-full">
                                             <label className={labelClass}>Deskripsi</label>
@@ -356,21 +361,23 @@ export default function EventCreate() {
                 <motion.div
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                     transition={{ delay: 0.35 }}
-                    className="flex gap-3 pb-8">
+                    className="flex flex-col xs:flex-row gap-3 pb-8">
                     <button type="submit" disabled={processing}
-                        className="flex items-center gap-2 bg-gradient-to-br from-indigo-600
-                                   to-blue-600 text-white px-6 py-3 rounded-2xl font-bold text-sm
-                                   shadow-md shadow-indigo-200 hover:-translate-y-0.5 hover:shadow-lg
-                                   hover:shadow-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed
-                                   transition-all duration-200">
+                        className="flex items-center justify-center gap-2 bg-gradient-to-br
+                                   from-indigo-600 to-blue-600 text-white px-6 py-3 rounded-2xl
+                                   font-bold text-sm shadow-md shadow-indigo-200
+                                   hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300
+                                   disabled:opacity-50 disabled:cursor-not-allowed
+                                   transition-all duration-200 w-full xs:w-auto">
                         <Save className="w-4 h-4" />
                         {processing ? 'Menyimpan...' : 'Simpan Event'}
                     </button>
                     <Link href={route('admin.events.index')}
-                        className="flex items-center gap-2 px-6 py-3 border border-gray-200
-                                   rounded-2xl text-sm font-bold text-gray-500 bg-white shadow-sm
-                                   hover:border-red-200 hover:text-red-500 hover:-translate-y-0.5
-                                   transition-all duration-200">
+                        className="flex items-center justify-center gap-2 px-6 py-3
+                                   border border-gray-200 rounded-2xl text-sm font-bold
+                                   text-gray-500 bg-white shadow-sm hover:border-red-200
+                                   hover:text-red-500 hover:-translate-y-0.5 transition-all
+                                   duration-200 w-full xs:w-auto text-center">
                         <X className="w-4 h-4" />
                         Batal
                     </Link>

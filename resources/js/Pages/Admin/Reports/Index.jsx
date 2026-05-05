@@ -58,29 +58,29 @@ export default function ReportsIndex({ events }) {
                 initial={{ opacity: 0, y: -16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="relative overflow-hidden rounded-3xl bg-gradient-to-br
-                           from-slate-800 via-indigo-900 to-blue-900 p-6 mb-8 text-white">
+                className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br
+                           from-slate-800 via-indigo-900 to-blue-900 p-4 sm:p-6 mb-6 sm:mb-8 text-white">
                 <div className="absolute inset-0">
-                    <div className="absolute top-0 right-0 w-72 h-72 bg-white/5
+                    <div className="absolute top-0 right-0 w-48 sm:w-72 h-48 sm:h-72 bg-white/5
                                     rounded-full translate-x-1/3 -translate-y-1/3" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/10
+                    <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 bg-indigo-400/10
                                     rounded-full -translate-x-1/4 translate-y-1/4" />
                 </div>
                 <div className="relative z-10 flex justify-between items-center">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <BarChart3 className="w-4 h-4 text-indigo-300" />
-                            <span className="text-indigo-300 text-sm font-medium">Panel Administrator</span>
+                            <BarChart3 className="w-4 h-4 text-indigo-300 shrink-0" />
+                            <span className="text-indigo-300 text-xs sm:text-sm font-medium">Panel Administrator</span>
                         </div>
-                        <h1 className="text-2xl font-black">Laporan & Statistik 📊</h1>
-                        <p className="text-slate-300 text-sm mt-1">
+                        <h1 className="text-xl sm:text-2xl font-black">Laporan & Statistik 📊</h1>
+                        <p className="text-slate-300 text-xs sm:text-sm mt-1">
                             Pantau performa semua event dalam satu tampilan.
                         </p>
                     </div>
                     <motion.div
                         animate={{ rotate: [0, 8, -4, 0], y: [0, -6, 0] }}
                         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="text-5xl hidden md:block">
+                        className="text-4xl sm:text-5xl hidden sm:block">
                         📊
                     </motion.div>
                 </div>
@@ -89,19 +89,20 @@ export default function ReportsIndex({ events }) {
             {/* ── Stat Cards ── */}
             <motion.div
                 initial="hidden" animate="show" variants={stagger}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                className="grid grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 {stats.map((s, i) => (
                     <motion.div key={i} variants={fadeUp}
                         whileHover={{ y: -4, scale: 1.03 }}
-                        className={`bg-white rounded-2xl p-5 shadow-lg ${s.shadow}
-                                    border border-gray-100 flex items-center gap-4`}>
-                        <div className={`w-12 h-12 bg-gradient-to-br ${s.grad} rounded-xl
+                        className={`bg-white rounded-2xl p-3 sm:p-5 shadow-lg ${s.shadow}
+                                    border border-gray-100 flex flex-col sm:flex-row items-center
+                                    sm:items-start gap-2 sm:gap-4`}>
+                        <div className={`w-9 h-9 sm:w-12 sm:h-12 bg-gradient-to-br ${s.grad} rounded-xl
                                          flex items-center justify-center shadow-md shrink-0`}>
-                            <s.icon className="w-5 h-5 text-white" />
+                            <s.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
-                        <div>
-                            <p className="text-2xl font-black text-gray-800">{s.value}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
+                        <div className="text-center sm:text-left">
+                            <p className="text-xl sm:text-2xl font-black text-gray-800">{s.value}</p>
+                            <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 leading-tight">{s.label}</p>
                         </div>
                     </motion.div>
                 ))}
@@ -112,13 +113,13 @@ export default function ReportsIndex({ events }) {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
 
-                <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100">
-                    <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                <div className="flex items-center gap-3 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
+                    <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center shrink-0">
                         <BarChart3 className="w-4 h-4 text-indigo-600" />
                     </div>
-                    <h2 className="font-bold text-gray-800">Daftar Event & Statistik</h2>
+                    <h2 className="font-bold text-gray-800 text-sm sm:text-base">Daftar Event & Statistik</h2>
                 </div>
 
                 {/* Desktop Table */}
@@ -128,7 +129,7 @@ export default function ReportsIndex({ events }) {
                             <tr className="bg-gray-50">
                                 {['Event', 'Status', 'Peserta', 'Juri', 'Periode', 'Aksi'].map(h => (
                                     <th key={h} className="px-5 py-3.5 text-left text-xs font-bold
-                                                            text-gray-500 uppercase tracking-wider">
+                                                            text-gray-500 uppercase tracking-wider whitespace-nowrap">
                                         {h}
                                     </th>
                                 ))}
@@ -160,7 +161,7 @@ export default function ReportsIndex({ events }) {
                 </div>
 
                 {/* Mobile Cards */}
-                <div className="md:hidden p-4 space-y-3">
+                <div className="md:hidden p-3 sm:p-4 space-y-3">
                     {events.length === 0 ? (
                         <div className="flex flex-col items-center py-12 text-gray-400">
                             <div className="text-5xl mb-3">📭</div>
@@ -185,23 +186,20 @@ function EventRow({ event }) {
     return (
         <motion.tr variants={fadeUp}
             className="hover:bg-indigo-50/30 transition-colors duration-150">
-            {/* Event */}
             <td className="px-5 py-4">
                 <p className="font-bold text-gray-800 text-sm">{event.title}</p>
                 <p className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
-                    <MapPin className="w-3 h-3" />
-                    {event.location ?? 'Lokasi belum ditentukan'}
+                    <MapPin className="w-3 h-3 shrink-0" />
+                    <span className="truncate max-w-[180px]">{event.location ?? 'Lokasi belum ditentukan'}</span>
                 </p>
             </td>
-            {/* Status */}
             <td className="px-5 py-4">
                 <span className={`inline-flex items-center gap-1.5 text-xs font-bold
-                                  px-2.5 py-1 rounded-full ${cfg.bg} ${cfg.text}`}>
+                                  px-2.5 py-1 rounded-full ${cfg.bg} ${cfg.text} whitespace-nowrap`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
                     {cfg.label}
                 </span>
             </td>
-            {/* Peserta */}
             <td className="px-5 py-4">
                 <div className="flex items-center gap-1.5">
                     <div className="w-6 h-6 bg-indigo-100 rounded-lg flex items-center
@@ -216,7 +214,6 @@ function EventRow({ event }) {
                     )}
                 </div>
             </td>
-            {/* Juri */}
             <td className="px-5 py-4">
                 <div className="flex items-center gap-1.5">
                     <div className="w-6 h-6 bg-violet-100 rounded-lg flex items-center
@@ -228,22 +225,20 @@ function EventRow({ event }) {
                     </span>
                 </div>
             </td>
-            {/* Periode */}
             <td className="px-5 py-4">
-                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 whitespace-nowrap">
                     <CalendarDays className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                     <span>{event.event_start}</span>
                 </div>
-                <p className="text-xs text-gray-400 mt-0.5 pl-5">s/d {event.event_end}</p>
+                <p className="text-xs text-gray-400 mt-0.5 pl-5 whitespace-nowrap">s/d {event.event_end}</p>
             </td>
-            {/* Aksi */}
             <td className="px-5 py-4">
                 <Link href={route('admin.reports.leaderboard', event.id)}
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700
                                border border-amber-100 rounded-xl text-xs font-bold
                                hover:bg-amber-100 hover:-translate-y-0.5 transition-all duration-200
                                whitespace-nowrap">
-                    <Trophy className="w-3.5 h-3.5" />
+                    <Trophy className="w-3.5 h-3.5 shrink-0" />
                     Leaderboard
                 </Link>
             </td>
@@ -259,42 +254,42 @@ function EventMobileCard({ event, index }) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.06 }}
-            className="p-4 rounded-2xl border border-gray-100 bg-gray-50/40
+            className="p-3 sm:p-4 rounded-2xl border border-gray-100 bg-gray-50/40
                        hover:border-indigo-200 transition-colors duration-200">
             <div className="flex justify-between items-start gap-2 mb-3">
-                <div>
-                    <p className="font-bold text-gray-800 text-sm">{event.title}</p>
+                <div className="min-w-0 flex-1">
+                    <p className="font-bold text-gray-800 text-sm truncate">{event.title}</p>
                     <p className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
-                        <MapPin className="w-3 h-3" />
-                        {event.location ?? 'Lokasi belum ditentukan'}
+                        <MapPin className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{event.location ?? 'Lokasi belum ditentukan'}</span>
                     </p>
                 </div>
                 <span className={`inline-flex items-center gap-1.5 text-xs font-bold
-                                  px-2.5 py-1 rounded-full shrink-0 ${cfg.bg} ${cfg.text}`}>
+                                  px-2 py-1 rounded-full shrink-0 ${cfg.bg} ${cfg.text}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
                     {cfg.label}
                 </span>
             </div>
-            <div className="flex flex-wrap gap-3 text-xs mb-3">
+            <div className="flex flex-wrap gap-2 text-xs mb-3">
                 <span className="flex items-center gap-1 text-gray-600 font-medium">
-                    <Users className="w-3 h-3 text-indigo-400" />
+                    <Users className="w-3 h-3 text-indigo-400 shrink-0" />
                     {event.registrations_count}
                     {event.max_participants ? `/${event.max_participants}` : ''} peserta
                 </span>
                 <span className="flex items-center gap-1 text-gray-600 font-medium">
-                    <UserCog className="w-3 h-3 text-violet-400" />
+                    <UserCog className="w-3 h-3 text-violet-400 shrink-0" />
                     {event.jury_assignments_count} juri
                 </span>
                 <span className="flex items-center gap-1 text-gray-500">
-                    <CalendarDays className="w-3 h-3" />
+                    <CalendarDays className="w-3 h-3 shrink-0" />
                     {event.event_start} – {event.event_end}
                 </span>
             </div>
             <Link href={route('admin.reports.leaderboard', event.id)}
                 className="flex items-center justify-center gap-2 w-full py-2.5 bg-amber-50
                            text-amber-700 border border-amber-100 rounded-2xl text-xs font-bold
-                           hover:bg-amber-100 hover:-translate-y-0.5 transition-all duration-200">
-                <Trophy className="w-3.5 h-3.5" />
+                           hover:bg-amber-100 active:scale-95 transition-all duration-200">
+                <Trophy className="w-3.5 h-3.5 shrink-0" />
                 Lihat Leaderboard
             </Link>
         </motion.div>

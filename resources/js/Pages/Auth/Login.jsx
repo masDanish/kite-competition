@@ -27,7 +27,7 @@ export default function Login({ status, canResetPassword }) {
 
             <div className="min-h-screen flex items-center justify-center
                             bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950
-                            px-6 relative overflow-hidden">
+                            px-4 sm:px-6 py-8 sm:py-0 relative overflow-hidden">
 
                 {/* Grid background */}
                 <div className="absolute inset-0 opacity-20"
@@ -38,11 +38,11 @@ export default function Login({ status, canResetPassword }) {
                     }} />
 
                 {/* Glowing orbs */}
-                <motion.div className="absolute w-96 h-96 rounded-full pointer-events-none"
+                <motion.div className="absolute w-64 sm:w-96 h-64 sm:h-96 rounded-full pointer-events-none"
                     style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)', top: '5%', left: '5%', opacity: 0.15 }}
                     animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.2, 0.1] }}
                     transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
-                <motion.div className="absolute w-72 h-72 rounded-full pointer-events-none"
+                <motion.div className="absolute w-52 sm:w-72 h-52 sm:h-72 rounded-full pointer-events-none"
                     style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)', bottom: '10%', right: '5%', opacity: 0.15 }}
                     animate={{ scale: [1.2, 1, 1.2], opacity: [0.15, 0.08, 0.15] }}
                     transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
@@ -51,9 +51,9 @@ export default function Login({ status, canResetPassword }) {
                 {[...Array(12)].map((_, i) => (
                     <motion.div key={i}
                         className="absolute w-1 h-1 bg-indigo-300 rounded-full opacity-60 pointer-events-none"
-                        style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+                        style={{ left: `${(i * 337) % 100}%`, top: `${(i * 271) % 100}%` }}
                         animate={{ y: [0, -25, 0], opacity: [0.3, 0.7, 0.3] }}
-                        transition={{ duration: 3 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3, ease: 'easeInOut' }} />
+                        transition={{ duration: 3 + (i % 4), repeat: Infinity, delay: (i % 5) * 0.6, ease: 'easeInOut' }} />
                 ))}
 
                 {/* CARD */}
@@ -61,19 +61,16 @@ export default function Login({ status, canResetPassword }) {
                     initial={{ opacity: 0, y: 32 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative z-10 w-full max-w-4xl bg-white/10 backdrop-blur-xl
-                               shadow-2xl shadow-black/40 rounded-3xl overflow-hidden
-                               grid md:grid-cols-2 border border-white/10">
+                    className="relative z-10 w-full max-w-sm sm:max-w-4xl bg-white/10 backdrop-blur-xl
+                               shadow-2xl shadow-black/40 rounded-2xl sm:rounded-3xl overflow-hidden
+                               sm:grid sm:grid-cols-2 border border-white/10">
 
-                    {/* LEFT — branding */}
-                    <div className="hidden md:flex flex-col justify-center items-center
+                    {/* LEFT — branding (hidden on mobile) */}
+                    <div className="hidden sm:flex flex-col justify-center items-center
                                     bg-gradient-to-br from-indigo-600 to-blue-700 text-white p-12
                                     relative overflow-hidden">
-                        {/* Corner decoration */}
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10
-                                        rounded-bl-full" />
-                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5
-                                        rounded-tr-full" />
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-bl-full" />
+                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-tr-full" />
 
                         <motion.div
                             animate={{ rotate: [0, 8, -5, 0] }}
@@ -83,7 +80,7 @@ export default function Login({ status, canResetPassword }) {
                         </motion.div>
 
                         <div className="relative z-10 flex items-center gap-3 mb-4">
-                            <img src={Logo} className="w-10 h-10 object-contain rounded-xl" />
+                            <img src={Logo} className="w-10 h-10 object-contain rounded-xl" alt="Logo" />
                             <div>
                                 <p className="font-black text-white text-lg leading-none">
                                     Kite Competition
@@ -105,7 +102,6 @@ export default function Login({ status, canResetPassword }) {
                             ))}
                         </div>
 
-                        {/* Animated badge */}
                         <motion.div
                             animate={{ y: [0, -6, 0] }}
                             transition={{ duration: 4, repeat: Infinity }}
@@ -117,12 +113,24 @@ export default function Login({ status, canResetPassword }) {
                     </div>
 
                     {/* RIGHT — form */}
-                    <div className="p-8 bg-white/5 backdrop-blur-sm">
-                        <div className="mb-6">
-                            <h2 className="text-2xl font-black text-white">
+                    <div className="p-6 sm:p-8 bg-white/5 backdrop-blur-sm">
+
+                        {/* Mobile branding header */}
+                        <div className="flex sm:hidden items-center gap-3 mb-6 pb-5
+                                        border-b border-white/10">
+                            <img src={Logo} className="w-9 h-9 object-contain rounded-xl" alt="Logo"/>
+                            <div>
+                                <p className="font-black text-white text-base leading-none">Kite Competition</p>
+                                <p className="text-indigo-300 text-xs mt-0.5">Design • Fly • Compete</p>
+                            </div>
+                            <span className="ml-auto text-3xl">🪁</span>
+                        </div>
+
+                        <div className="mb-5 sm:mb-6">
+                            <h2 className="text-xl sm:text-2xl font-black text-white">
                                 Welcome Back 👋
                             </h2>
-                            <p className="text-sm text-slate-400 mt-1">
+                            <p className="text-xs sm:text-sm text-slate-400 mt-1">
                                 Login to continue your kite journey
                             </p>
                         </div>
@@ -134,17 +142,17 @@ export default function Login({ status, canResetPassword }) {
                             </div>
                         )}
 
-                        <form onSubmit={submit} className="space-y-4">
+                        <form onSubmit={submit} className="space-y-3 sm:space-y-4">
 
                             <div>
                                 <InputLabel htmlFor="email" value="Email"
-                                    className="text-slate-300 text-sm font-medium" />
+                                    className="text-slate-300 text-xs sm:text-sm font-medium" />
                                 <TextInput
                                     id="email" type="email" value={data.email}
                                     className="mt-1 block w-full rounded-xl border-white/10
                                                bg-white/10 text-white placeholder:text-slate-500
                                                focus:ring-indigo-500 focus:border-indigo-500
-                                               backdrop-blur-sm"
+                                               backdrop-blur-sm text-sm"
                                     autoComplete="username" isFocused
                                     onChange={(e) => setData('email', e.target.value)}
                                 />
@@ -153,13 +161,13 @@ export default function Login({ status, canResetPassword }) {
 
                             <div>
                                 <InputLabel htmlFor="password" value="Password"
-                                    className="text-slate-300 text-sm font-medium" />
+                                    className="text-slate-300 text-xs sm:text-sm font-medium" />
                                 <TextInput
                                     id="password" type="password" value={data.password}
                                     className="mt-1 block w-full rounded-xl border-white/10
                                                bg-white/10 text-white placeholder:text-slate-500
                                                focus:ring-indigo-500 focus:border-indigo-500
-                                               backdrop-blur-sm"
+                                               backdrop-blur-sm text-sm"
                                     autoComplete="current-password"
                                     onChange={(e) => setData('password', e.target.value)}
                                 />
@@ -169,7 +177,7 @@ export default function Login({ status, canResetPassword }) {
                             <div className="flex items-center">
                                 <Checkbox name="remember" checked={data.remember}
                                     onChange={(e) => setData('remember', e.target.checked)} />
-                                <span className="ml-2 text-sm text-slate-400">Remember me</span>
+                                <span className="ml-2 text-xs sm:text-sm text-slate-400">Remember me</span>
                             </div>
 
                             <motion.button
@@ -178,15 +186,15 @@ export default function Login({ status, canResetPassword }) {
                                 whileTap={{ scale: 0.99 }}
                                 className="w-full flex items-center justify-center gap-2
                                            bg-gradient-to-r from-indigo-500 to-blue-600
-                                           text-white font-bold py-3 rounded-xl
-                                           shadow-lg shadow-indigo-500/30
+                                           text-white font-bold py-2.5 sm:py-3 rounded-xl
+                                           shadow-lg shadow-indigo-500/30 text-sm sm:text-base
                                            hover:shadow-indigo-500/50 transition-all
                                            disabled:opacity-50 disabled:cursor-not-allowed">
                                 {processing ? 'Logging in...' : 'Log In'}
                                 {!processing && <ArrowRight className="w-4 h-4" />}
                             </motion.button>
 
-                            <div className="flex justify-between text-sm pt-1">
+                            <div className="flex flex-wrap justify-between gap-2 text-xs sm:text-sm pt-1">
                                 {canResetPassword && (
                                     <Link href={route('password.request')}
                                         className="text-slate-400 hover:text-indigo-400 transition">
