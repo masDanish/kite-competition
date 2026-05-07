@@ -422,52 +422,7 @@ export default function JuryLayout({ children, header }) {
                 </main>
             </div>
 
-            {/* ══════════════════════════════════════
-                MOBILE BOTTOM NAV BAR
-            ══════════════════════════════════════ */}
-            <nav className="fixed bottom-0 left-0 right-0 z-30 lg:hidden
-                            bg-white border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]
-                            safe-area-inset-bottom">
-                <div className="flex items-center justify-around px-2 py-1.5">
-                    {navItems.map((item) => {
-                        const active = route().current(item.href);
-                        return (
-                            <Link key={item.href} href={route(item.href)} className="flex-1">
-                                <motion.div
-                                    whileTap={{ scale: 0.92 }}
-                                    className="flex flex-col items-center gap-0.5 py-1.5 px-2 rounded-2xl
-                                               transition-all duration-200">
-                                    <div className={`w-10 h-10 flex items-center justify-center rounded-2xl
-                                                     transition-all duration-200
-                                                     ${active
-                                                         ? 'bg-teal-600 shadow-lg shadow-teal-200'
-                                                         : 'bg-transparent'}`}>
-                                        <item.icon size={18}
-                                            className={active ? 'text-white' : 'text-gray-400'} />
-                                    </div>
-                                    <span className={`text-[10px] font-semibold transition-colors duration-200
-                                                      ${active ? 'text-teal-600' : 'text-gray-400'}`}>
-                                        {item.label}
-                                    </span>
-                                </motion.div>
-                            </Link>
-                        );
-                    })}
-
-                    {/* Logout in bottom nav */}
-                    <Link href={route('logout')} method="post" as="button" className="flex-1">
-                        <motion.div
-                            whileTap={{ scale: 0.92 }}
-                            className="flex flex-col items-center gap-0.5 py-1.5 px-2 rounded-2xl
-                                       transition-all duration-200">
-                            <div className="w-10 h-10 flex items-center justify-center rounded-2xl">
-                                <LogOut size={18} className="text-gray-400" />
-                            </div>
-                            <span className="text-[10px] font-semibold text-gray-400">Keluar</span>
-                        </motion.div>
-                    </Link>
-                </div>
-            </nav>
+            
         </div>
     );
 }
