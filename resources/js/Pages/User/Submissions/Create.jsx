@@ -53,6 +53,7 @@ export default function SubmissionCreate({ registration }) {
     }
     function handlePhoto(e) {
         const file = e.target.files[0]; if(!file) return;
+        console.log("tes")
         setData('photo_url', file);
         setPhotoPreview(URL.createObjectURL(file));
     }
@@ -298,7 +299,7 @@ export default function SubmissionCreate({ registration }) {
                                 <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">
                                     File Desain
                                     <span className="text-gray-400 font-normal ml-1">
-                                        (PDF/JPG/PNG, maks. 5MB)
+                                        (PDF/JPG/PNG, maks. 50MB)
                                     </span>
                                 </label>
                                 <label className={`flex flex-col items-center justify-center w-full
@@ -351,7 +352,7 @@ export default function SubmissionCreate({ registration }) {
                                 <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">
                                     Foto Karya <span className="text-red-400">*</span>
                                     <span className="text-gray-400 font-normal ml-1">
-                                        (JPG/PNG, maks. 3MB)
+                                        (JPG/PNG, maks. 50MB)
                                     </span>
                                 </label>
                                 <label className={`flex flex-col items-center justify-center w-full
